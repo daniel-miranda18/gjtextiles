@@ -65,7 +65,7 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
                                         <img src={'/storage/'+ selectedImage} alt={selectedImage} className="object-cover my-auto mx-auto h-full" />
                                     ) : (
                                         <div className="bg-red-500 py-2 px-4 text-white text-center rounded-lg mt-16">
-                                            <p>NO DISPONIBLE EN ESTE MOMENTO</p>
+                                            <p>NO DISPONIBLE EN ESTE MOMENTO.</p>
                                         </div>
                                     )}
                             </div>

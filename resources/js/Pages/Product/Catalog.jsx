@@ -22,7 +22,7 @@ export default function Catalog({ auth, user, products, searchTerm }) {
             <Head title="Catálogo" />
             {searchTerm && (
                 <div className="flex justify-end pr-10 mt-4">
-                    <button 
+                    <button
                         onClick={handleClearSearch} 
                         className="block text-gray-100 bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-400 dark:hover:bg-gray-500 dark:focus:ring-blue-800"
                     >

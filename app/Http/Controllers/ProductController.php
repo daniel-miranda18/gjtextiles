@@ -40,10 +40,6 @@ class ProductController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-
     public function catalog(ProductRequest $request)
     {
         $query = Product::query();
@@ -78,6 +74,9 @@ class ProductController extends Controller
         ]);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         $user = auth()->user();
