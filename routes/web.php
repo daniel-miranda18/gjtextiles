@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ColorsProductController;
+use App\Http\Controllers\CartController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -18,7 +19,7 @@ Route::get('/', function () {
 
 Route::get('/product/catalog', [ProductController::class, 'catalog'])->name('product.catalog');
 Route::get('/product/personalize/{id}', [ProductController::class, 'personalize'])->name('product.personalize');
-
+Route::resource('cart', CartController::class);
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
     Route::resource('product', ProductController::class);

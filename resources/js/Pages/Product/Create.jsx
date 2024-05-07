@@ -19,7 +19,6 @@ export default function Create({ auth, colors, sizes }){
 
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log(data)
         post(route("product.store"));
     }
     
