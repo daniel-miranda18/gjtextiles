@@ -44,31 +44,31 @@ class ProductController extends Controller
      * Show the form for creating a new resource.
      */
 
-     public function catalog(ProductRequest $request)
-     {
-         $query = Product::query();
-         $searchTerm = $request->input('search');
+    public function catalog(ProductRequest $request)
+    {
+        $query = Product::query();
+        $searchTerm = $request->input('search');
+        
+        if ($searchTerm) {
+            $query->where(function ($query) use ($searchTerm) {
+                $query->where('name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('description', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('price', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('stock', 'like', '%' . $searchTerm . '%');
+            });
+        }
          
-         if ($searchTerm) {
-             $query->where(function ($query) use ($searchTerm) {
-                 $query->where('name', 'like', '%' . $searchTerm . '%')
-                     ->orWhere('description', 'like', '%' . $searchTerm . '%')
-                     ->orWhere('price', 'like', '%' . $searchTerm . '%')
-                     ->orWhere('stock', 'like', '%' . $searchTerm . '%');
-             });
-         }
-         
-         $products = $query->with('colors', 'images')->paginate(20)->onEachSide(1);
-         
-         return inertia("Product/Catalog", [
-             "products" => ProductResource::collection($products),
-             "searchTerm" => $searchTerm,
-         ]);
+        $products = $query->with('colors', 'images')->paginate(15)->onEachSide(1);
+        
+        return inertia("Product/Catalog", [
+            "products" => ProductResource::collection($products),
+            "searchTerm" => $searchTerm,
+        ]);
     }
 
     public function personalize($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::with('sizes', 'colors.images')->findOrFail($id);
         $sizes = $product->sizes;
         $colors = $product->colors;
         return inertia("Product/Personalize", [
