@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('large', 250)->nullable()->default('');
             $table->string('sleeveless', 250)->nullable()->default('');
             $table->string('quarters', 250)->nullable()->default('');
-            $table->longText('description')->nullable()->default('');
+            $table->longText('description')->nullable();
             $table->integer('price')->unsigned()->nullable()->default();
             $table->integer('stock')->unsigned()->nullable()->default();
             $table->timestamps();
