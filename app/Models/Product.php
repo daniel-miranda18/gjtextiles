@@ -16,7 +16,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property $created_at
  * @property $updated_at
  *
+ * @property CartItem[] $cartItems
  * @property ColorsProduct[] $colorsProducts
+ * @property ImagesProduct[] $imagesProducts
  * @property Size[] $sizes
  * @property SizesProduct[] $sizesProducts
  * @package App
@@ -34,6 +36,7 @@ class Product extends Model
      */
     protected $fillable = ['name', 'description', 'price', 'stock'];
 
+
     public function colors(): BelongsToMany
     {
         return $this->belongsToMany(Color::class, 'colors_products', 'product_id', 'color_id');
@@ -48,4 +51,37 @@ class Product extends Model
     {
         return $this->hasMany(ImagesProduct::class, 'product_id', 'id');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function cartItems()
+    {
+        return $this->hasMany(\App\Models\CartItem::class, 'product_id', 'id');
+    }
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function colorsProducts()
+    {
+        return $this->hasMany(\App\Models\ColorsProduct::class, 'id', 'product_id');
+    }
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function imagesProducts()
+    {
+        return $this->hasMany(\App\Models\ImagesProduct::class, 'id', 'product_id');
+    }
+    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sizesProducts()
+    {
+        return $this->hasMany(\App\Models\SizesProduct::class, 'id', 'product_id');
+    }
+    
 }
