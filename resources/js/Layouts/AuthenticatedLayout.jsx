@@ -20,7 +20,7 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink href={route('product.catalog')} active={route().current('product.catalog')} iconClass="fas fa-book">
                                     Catálogo
                                 </NavLink>
-                                <NavLink href={route('product.catalog')} active={route().current('product.catalog')} iconClass="fas fa-shopping-cart">
+                                <NavLink href={route('cart.index')} active={route().current('cart.index')} iconClass="fas fa-shopping-cart">
                                     Carrito de Compras
                                 </NavLink>
                                 {isLoggedIn ? (
