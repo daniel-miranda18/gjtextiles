@@ -15,7 +15,17 @@ class CartController extends Controller
      */
     public function index()
     {
-        //
+        $user = auth()->user();
+        if ($user->cart) {
+            $cart = $user->cart;
+            $cartItems = $cart->cartItems()->with('product.colors.images')->get();
+            return inertia('Cart/Index', [
+                'cartItems' => $cartItems,
+                'success' => session('success'),
+            ]);
+        } else {
+            return redirect()->route('home')->with('warning', 'Aún no tienes productos en tu carrito.');
+        }
     }
 
     /**
@@ -34,29 +44,38 @@ class CartController extends Controller
         if (!auth()->check()) {
             return redirect()->route('login');
         }
+
         $user = auth()->user();
         $productId = $request->input('product_id');
         $colorId = $request->input('color_id');
         $sizeId = $request->input('size_id');
         $quantity = $request->input('quantity');
-        $cart = $user->cart;
-        if (!$cart) {
+        
+        if (!$user->cart) {
             $cart = Cart::create([
                 'user_id' => $user->id,
             ]);
+        } else {
+            $cart = $user->cart;
         }
-        
-        $cartItem = CartItem::create([
-            'cart_id' => $cart->id,
-            'product_id' => $productId,
-            'color_id' => $colorId,
-            'size_id' => $sizeId,
-            'quantity' => $quantity,
-        ]);
 
-        return redirect()->route('cart.index')
-                        ->with('success', 'Producto agregado al carrito exitosamente.');
+        $existingCartItem = $cart->items()->where('product_id', $productId)->first();
+        if ($existingCartItem) {
+            return redirect()->route('cart.index')
+                            ->with('warning', 'Este producto ya está en el carrito.');
+        } else {
+            $cartItem = CartItem::create([
+                'cart_id' => $cart->id,
+                'product_id' => $productId,
+                'color_id' => $colorId,
+                'size_id' => $sizeId,
+                'quantity' => $quantity,
+            ]);
+            return redirect()->route('cart.index')
+                            ->with('success', 'Producto agregado al carrito exitosamente.');
+        }
     }
+
 
 
     /**
