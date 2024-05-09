@@ -3,6 +3,7 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import TextAreaInput from '@/Components/TextAreaInput';
 import TextInput from '@/Components/TextInput';
+import Modal from '@/Components/Modal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
@@ -21,7 +22,6 @@ export default function Create({ auth, colors, sizes }){
         e.preventDefault();
         post(route("product.store"));
     }
-    
 
     return(
         <AuthenticatedLayout user={auth.user}>
@@ -106,67 +106,80 @@ export default function Create({ auth, colors, sizes }){
 
                         <div className="mt-4">
                             <InputLabel htmlFor="product_colors" value="Colores Disponibles" />
-                            {colors.map(color => (
-                                <div key={color.id} className="items-center mt-2 mx-auto">
-                                    <Checkbox
-                                        id={`color_${color.id}`}
-                                        name="selectedColors"
-                                        value={color.id}
-                                        checked={data.selectedColors.includes(color.id)}
-                                        onChange={(e) => {
-                                            const isChecked = e.target.checked;
-                                            setData("selectedColors", isChecked ? [...data.selectedColors, color.id] : data.selectedColors.filter(id => id !== color.id));
-                                        }}
-                                    />
-                                    <InputError
-                                    message={errors.selectedColors} className="mt-2"
-                                    />
-                                    <span className="mx-4">{color.name}</span>
-                                    {data.selectedColors.includes(color.id) && (
-                                        <>
-                                        <input 
-                                            type="file" 
-                                            name="color_images" 
-                                            className="my-4 block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 file:bg-gray-50 file:border-0 file:me-4 file:py-3 file:px-4 dark:file:bg-neutral-700 dark:file:text-neutral-400"
-                                            accept="image/*"
+                            {colors.length === 0 ? (
+                                <>
+                                <p>No hay colores disponibles.</p>
+                                <button type="button">Agregar Colores</button>
+                                </>
+                            ) : (
+                                colors.map(color => (
+                                    <div key={color.id} className="items-center mt-2 mx-auto">
+                                        <Checkbox
+                                            id={`color_${color.id}`}
+                                            name="selectedColors"
+                                            value={color.id}
+                                            checked={data.selectedColors.includes(color.id)}
                                             onChange={(e) => {
-                                                const file = e.target.files[0];
-                                                const colorId = color.id;
-                                                const updatedImages = [...data.colorImages, { colorId, file }];
-                                                setData("colorImages", updatedImages);
+                                                const isChecked = e.target.checked;
+                                                setData("selectedColors", isChecked ? [...data.selectedColors, color.id] : data.selectedColors.filter(id => id !== color.id));
                                             }}
                                         />
-                                        <p class="ms-10 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PNG o JPG (MAX. 800x400px).</p>
-                                        </>
-                                    )}
-                                </div>
-                            ))}
+                                        <InputError
+                                        message={errors.selectedColors} className="mt-2"
+                                        />
+                                        <span className="mx-4">{color.name}</span>
+                                        {data.selectedColors.includes(color.id) && (
+                                            <>
+                                            <input 
+                                                type="file" 
+                                                name="color_images" 
+                                                className="my-4 block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 file:bg-gray-50 file:border-0 file:me-4 file:py-3 file:px-4 dark:file:bg-neutral-700 dark:file:text-neutral-400"
+                                                accept="image/*"
+                                                onChange={(e) => {
+                                                    const file = e.target.files[0];
+                                                    const colorId = color.id;
+                                                    const updatedImages = [...data.colorImages, { colorId, file }];
+                                                    setData("colorImages", updatedImages);
+                                                }}
+                                            />
+                                            <p class="ms-10 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PNG o JPG (MAX. 800x400px).</p>
+                                            </>
+                                        )}
+                                    </div>
+                                ))
+                            )}
                         </div>
-
 
                         <div className="mt-4">
                             <InputLabel 
                             htmlFor="product_sizes"
                             value="Tallas Disponibles"
                             />
-                            {sizes.map(size => (
-                                <label key={size.id} className="inline-flex items-center mt-2 mr-10">
-                                    <Checkbox
-                                        id={`size_${size.id}`}
-                                        name="selectedSizes"
-                                        value={size.id}
-                                        checked={data.selectedSizes.includes(size.id)}
-                                        onChange={(e) => {
-                                            const isChecked = e.target.checked;
-                                            setData("selectedSizes", isChecked ? [...data.selectedSizes, size.id] : data.selectedSizes.filter(id => id !== size.id));
-                                        }}
-                                    />
-                                    <InputError
-                                    message={errors.selectedSizes} className="mt-2"
-                                    />
-                                    <span className="ml-2">{size.name}</span>
-                                </label>
-                            ))}
+                            {sizes.length === 0 ? (
+                                <>
+                                    <p>No hay tallas disponibles.</p>
+                                    <button type="button">Agregar Colores</button>
+                                </>
+                            ) : (
+                                sizes.map(size => (
+                                    <label key={size.id} className="inline-flex items-center mt-2 mr-10">
+                                        <Checkbox
+                                            id={`size_${size.id}`}
+                                            name="selectedSizes"
+                                            value={size.id}
+                                            checked={data.selectedSizes.includes(size.id)}
+                                            onChange={(e) => {
+                                                const isChecked = e.target.checked;
+                                                setData("selectedSizes", isChecked ? [...data.selectedSizes, size.id] : data.selectedSizes.filter(id => id !== size.id));
+                                            }}
+                                        />
+                                        <InputError
+                                        message={errors.selectedSizes} className="mt-2"
+                                        />
+                                        <span className="ml-2">{size.name}</span>
+                                    </label>
+                                ))
+                            )} 
                         </div>
 
                         <div className="mt-4 text-right">

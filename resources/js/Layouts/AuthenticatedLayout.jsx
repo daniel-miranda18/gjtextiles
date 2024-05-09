@@ -52,7 +52,7 @@ export default function Authenticated({ user, header, children }) {
                         </div>
 
                         <div className="hidden sm:flex sm:items-center sm:ms-6">
-                            {isLoggedIn && (
+                            {isLoggedIn ? (
                                 <div className="ms-3 relative">
                                     <Dropdown>
                                         <Dropdown.Trigger>
@@ -87,12 +87,12 @@ export default function Authenticated({ user, header, children }) {
                                         </Dropdown.Content>
                                     </Dropdown>
                                 </div>
-                            )}
-
-                            {!isLoggedIn && (
-                                <div>
+                            ) : (
+                                <>
+                                <div className="ms-3 relative">
                                     
                                 </div>
+                                </>
                             )}
                         </div>
 
@@ -124,9 +124,34 @@ export default function Authenticated({ user, header, children }) {
 
                 <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
                     <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
-                            Panel
-                        </ResponsiveNavLink>
+                        {isLoggedIn ? (
+                            <>
+                            {user.role === 'ADMIN' ? (
+                                    <>
+                                        <ResponsiveNavLink href={route('dashboard')}>
+                                            Panel
+                                        </ResponsiveNavLink>
+                                        <ResponsiveNavLink href={route('product.index')}>
+                                            Productos
+                                        </ResponsiveNavLink>
+                                    </>
+                                ) : (
+                                    null
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                <ResponsiveNavLink href={route('welcome')}>
+                                    Inicio
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink href={route('product.catalog')}>
+                                    Catálogo
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink href={route('cart.index')}>
+                                    Carrito de Compras
+                                </ResponsiveNavLink>
+                            </>
+                        )}
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">

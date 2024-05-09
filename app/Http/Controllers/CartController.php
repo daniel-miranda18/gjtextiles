@@ -16,17 +16,28 @@ class CartController extends Controller
     public function index()
     {
         $user = auth()->user();
-        if ($user->cart) {
+        if ($user && $user->cart) {
             $cart = $user->cart;
             $cartItems = $cart->cartItems()->with('product.colors.images')->get();
             return inertia('Cart/Index', [
                 'cartItems' => $cartItems,
                 'success' => session('success'),
             ]);
+        } elseif ($user && !$user->cart) {
+            return inertia('Cart/Index', [
+                'cartItems' => [],
+                'success' => session('success'),
+                'info' => 'Aún no tienes productos en tu carrito.'
+            ]);
         } else {
-            return redirect()->route('home')->with('warning', 'Aún no tienes productos en tu carrito.');
+            return inertia('Cart/Index', [
+                'cartItems' => [],
+                'success' => session('success'),
+                'warning' => 'Debes iniciar sesión para acceder a tu carrito.'
+            ]);
         }
     }
+
 
     /**
      * Show the form for creating a new resource.
