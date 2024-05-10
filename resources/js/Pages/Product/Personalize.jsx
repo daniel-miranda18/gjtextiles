@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 
 export default function Personalize({ auth, user, product, sizes, colors }) {
     const [selectedImage, setSelectedImage] = useState(product.image);
-    const [selectedColor] = useState(null);
+    const [selectedColor, setSelectedColor] = useState(null);
     const {data, setData, post} = useForm({
         product_id: product.id,
         color_id: "",
@@ -25,6 +25,7 @@ export default function Personalize({ auth, user, product, sizes, colors }) {
             [type + "_id"]: value,
         }));
         if (type === "color") {
+            setSelectedColor(value);
             const selectedColorObj = colors.find((color) => color.id === value);
             if (selectedColorObj && selectedColorObj.images.length > 0) {
                 setSelectedImage(selectedColorObj.images[0].image);

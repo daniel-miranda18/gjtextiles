@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Checkbox from '@/Components/Checkbox';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
@@ -6,8 +7,12 @@ import TextInput from '@/Components/TextInput';
 import Modal from '@/Components/Modal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
+import PrimaryButton from '@/Components/PrimaryButton';
+import DangerButton from '@/Components/DangerButton';
 
 export default function Create({ auth, colors, sizes }){
+    const [confirmingNewColor, setNewColor] = useState(false);
+    const [confirmingNewSize, setNewSize] = useState(false);
     const {data, setData, post, errors, reset} = useForm({
         name: "",
         description: "",
@@ -22,6 +27,42 @@ export default function Create({ auth, colors, sizes }){
         e.preventDefault();
         post(route("product.store"));
     }
+
+    const addNewColor = () => {
+        setNewColor(true);
+    };
+
+    const addNewSize = () => {
+        setNewSize(true);
+    };
+
+    const closeModal = () => {
+        setNewColor(false);
+        setNewSize(false);
+        reset();
+    };
+
+    const submitNewColor = (e) => {
+        e.preventDefault();
+        post(route("color.store"));
+        closeModal();
+    };
+
+    const submitNewSize = (e) => {
+        e.preventDefault();
+        post(route("size.store"));
+        closeModal();
+    };
+
+    const onChangeColor = (e) => {
+        const { value } = e.target;
+        setData("color", value);
+    };
+
+    const onChangeSize = (e) => {
+        const { value } = e.target;
+        setData("size", value);
+    };
 
     return(
         <AuthenticatedLayout user={auth.user}>
@@ -43,6 +84,7 @@ export default function Create({ auth, colors, sizes }){
                             className="mt-1 block w-full"
                             isFocused={true}
                             onChange={(e) => setData("name", e.target.value)}
+                            placeholder="Ingrese Nombre"
                             />
                             <InputError
                             message={errors.name} className="mt-2"
@@ -79,6 +121,7 @@ export default function Create({ auth, colors, sizes }){
                             className="mt-1 block w-full"
                             isFocused={true}
                             onChange={(e) => setData("price", e.target.value)}
+                            placeholder="Ingrese Precio del Producto"
                             />
                             <InputError
                             message={errors.price} className="mt-2"
@@ -98,6 +141,7 @@ export default function Create({ auth, colors, sizes }){
                             className="mt-1 block w-full"
                             isFocused={true}
                             onChange={(e) => setData("stock", e.target.value)}
+                            placeholder="Ingrese Stock del Producto"
                             />
                             <InputError
                             message={errors.stock} className="mt-2"
@@ -109,11 +153,10 @@ export default function Create({ auth, colors, sizes }){
                             {colors.length === 0 ? (
                                 <>
                                 <p>No hay colores disponibles.</p>
-                                <button type="button">Agregar Colores</button>
                                 </>
                             ) : (
                                 colors.map(color => (
-                                    <div key={color.id} className="items-center mt-2 mx-auto">
+                                    <div key={color.id} className="inline-flex items-center mt-2 mx-auto">
                                         <Checkbox
                                             id={`color_${color.id}`}
                                             name="selectedColors"
@@ -148,6 +191,13 @@ export default function Create({ auth, colors, sizes }){
                                     </div>
                                 ))
                             )}
+                            <PrimaryButton
+                                onClick={addNewColor}
+                                type="button"
+                                className="block text-white bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-emerald-700 dark:focus:ring-blue-800 mt-2"
+                            >
+                                NUEVO COLOR
+                            </PrimaryButton>
                         </div>
 
                         <div className="mt-4">
@@ -158,7 +208,6 @@ export default function Create({ auth, colors, sizes }){
                             {sizes.length === 0 ? (
                                 <>
                                     <p>No hay tallas disponibles.</p>
-                                    <button type="button">Agregar Colores</button>
                                 </>
                             ) : (
                                 sizes.map(size => (
@@ -179,7 +228,15 @@ export default function Create({ auth, colors, sizes }){
                                         <span className="ml-2">{size.name}</span>
                                     </label>
                                 ))
-                            )} 
+                            )}
+
+                            <PrimaryButton
+                                onClick={addNewSize}
+                                type="button"
+                                className="block text-white bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-emerald-700 dark:focus:ring-blue-800 mt-2"
+                            >
+                                NUEVA TALLA
+                            </PrimaryButton>
                         </div>
 
                         <div className="mt-4 text-right">
@@ -196,6 +253,99 @@ export default function Create({ auth, colors, sizes }){
                     </form>
                 </div>
             </div>
-        </AuthenticatedLayout>   
+            <Modal show={confirmingNewColor} onClose={closeModal}>
+                <div class="relative p-4 w-full max-h-full">
+                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                Nuevo Color
+                            </h3>
+                        </div>
+                        <div className="p-4 md:p-5">
+                            <form onSubmit={submitNewColor} className="space-y-4">
+                                <div>
+                                <InputLabel 
+                                    htmlFor="new_color"
+                                    value="Color"/>
+                                <TextInput
+                                    id="new_color"
+                                    type="text"
+                                    value={data.color}
+                                    name="color"
+                                    className="mt-1 block w-full"
+                                    isFocused={true}
+                                    onChange={onChangeColor}
+                                    placeholder="Ingrese Color"
+                                    required
+                                />
+                                <InputError
+                                    message={errors.color} className="mt-2"
+                                />
+                                <PrimaryButton
+                                    type="submit"
+                                    className="mt-2"
+                                >
+                                    AGREGAR
+                                </PrimaryButton>
+                                <DangerButton
+                                    type="button"
+                                    onClick={closeModal}
+                                    className="ms-2">
+                                    CANCELAR
+                                </DangerButton>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal show={confirmingNewSize} onClose={closeModal}>
+                <div class="relative p-4 w-full max-h-full">
+                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                Nueva Talla
+                            </h3>
+                        </div>
+                        <div className="p-4 md:p-5">
+                            <form onSubmit={submitNewSize} className="space-y-4">
+                                <div>
+                                <InputLabel 
+                                    htmlFor="new_size"
+                                    value="Talla"/>
+                                <TextInput
+                                    id="new_size"
+                                    type="text"
+                                    value={data.size}
+                                    name="size"
+                                    className="mt-1 block w-full"
+                                    isFocused={true}
+                                    onChange={onChangeSize}
+                                    placeholder="Ingrese Talla"
+                                    required
+                                />
+                                <InputError
+                                    message={errors.size} className="mt-2"
+                                />
+                                <PrimaryButton
+                                    type="submit"
+                                    className="mt-2"
+                                >
+                                    AGREGAR
+                                </PrimaryButton>
+                                <DangerButton
+                                    type="button"
+                                    onClick={closeModal}
+                                    className="ms-2">
+                                    CANCELAR
+                                </DangerButton>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+        </AuthenticatedLayout>
     );
 }
