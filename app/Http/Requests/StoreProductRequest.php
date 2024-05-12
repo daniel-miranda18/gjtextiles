@@ -25,6 +25,7 @@ class StoreProductRequest extends FormRequest
         return [
             "name" => ['required', 'max:255', 'min:3'],
             "description" => ['nullable'],
+            "sleeve" => ['required'],
             "price" => ['required', 'numeric', 'min:0.01', 'regex:/^\d+(\.\d{1,2})?$/'],
             "stock" => ['required', 'numeric', 'min:0', 'regex:/^\d+(\.\d{1,2})?$/'],
         ];

@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Color;
 use App\Models\Size;
+use App\Models\Category;
 use App\Models\ColorsProduct;
 use App\Models\SizesProduct;
+use App\Models\CategoriesProduct;
 use App\Models\ImagesProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -43,14 +45,16 @@ class ProductController extends Controller
     public function catalog(ProductRequest $request)
     {
         $query = Product::query();
+
         $searchTerm = $request->input('search');
-        
+
         if ($searchTerm) {
             $query->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'like', '%' . $searchTerm . '%')
                     ->orWhere('description', 'like', '%' . $searchTerm . '%')
                     ->orWhere('price', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('stock', 'like', '%' . $searchTerm . '%');
+                    ->orWhere('stock', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('sleeve', 'like', '%' . $searchTerm . '%');
             });
         }
          
@@ -87,10 +91,12 @@ class ProductController extends Controller
 
         $colors = Color::all();
         $sizes = Size::all();
+        $categories = Category::all();
 
         return inertia("Product/Create", [
             'colors' => $colors,
             'sizes' => $sizes,
+            'categories' => $categories,
         ]);
     }
 
@@ -108,6 +114,10 @@ class ProductController extends Controller
     
         if ($request->has('selectedSizes')) {
             $product->sizes()->attach($request->selectedSizes);
+        }
+
+        if ($request->has('selectedCategories')) {
+            $product->categories()->attach($request->selectedCategories);
         }
         
         foreach ($request->colorImages as $imageData) {

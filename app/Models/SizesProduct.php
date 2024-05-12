@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property $id
  * @property $product_id
  * @property $size_id
- * @property $quantity
  * @property $created_at
  * @property $updated_at
  *

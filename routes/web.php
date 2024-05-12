@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\SizeController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColorsProductController;
 use App\Http\Controllers\CartController;
 use Illuminate\Foundation\Application;
@@ -27,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('product', ProductController::class);
     Route::resource('color', ColorController::class);
     Route::resource('size', SizeController::class);
+    Route::resource('category', CategoryController::class);
 });
 
 Route::middleware('auth')->group(function () {

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property $id
  * @property $name
  * @property $description
+ * @property $sleeve
  * @property $price
  * @property $stock
  * @property $created_at
@@ -34,7 +35,7 @@ class Product extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'description', 'price', 'stock'];
+    protected $fillable = ['name', 'description', 'sleeve', 'price', 'stock'];
 
 
     public function colors(): BelongsToMany
@@ -45,6 +46,11 @@ class Product extends Model
     public function sizes(): BelongsToMany
     {
         return $this->belongsToMany(Size::class, 'sizes_products', 'product_id', 'size_id');
+    }
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'categories_products', 'product_id', 'category_id');
     }
 
     public function images(): HasMany

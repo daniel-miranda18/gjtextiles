@@ -9,10 +9,12 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import DangerButton from '@/Components/DangerButton';
+import SelectInput from '@/Components/SelectInput';
 
-export default function Create({ auth, colors, sizes }){
+export default function Create({ auth, colors, sizes, categories }){
     const [confirmingNewColor, setNewColor] = useState(false);
     const [confirmingNewSize, setNewSize] = useState(false);
+    const [confirmingNewCategory, setNewCategory] = useState(false);
     const {data, setData, post, errors, reset} = useForm({
         name: "",
         description: "",
@@ -20,6 +22,7 @@ export default function Create({ auth, colors, sizes }){
         stock: "",
         selectedColors: [],
         selectedSizes: [],
+        selectedCategories: [],
         colorImages: [],
     });
 
@@ -36,9 +39,14 @@ export default function Create({ auth, colors, sizes }){
         setNewSize(true);
     };
 
+    const addNewCategory = () => {
+        setNewCategory(true);
+    };
+
     const closeModal = () => {
         setNewColor(false);
         setNewSize(false);
+        setNewCategory(false);
         reset();
     };
 
@@ -54,6 +62,12 @@ export default function Create({ auth, colors, sizes }){
         closeModal();
     };
 
+    const submitNewCategory = (e) => {
+        e.preventDefault();
+        post(route("category.store"));
+        closeModal();
+    };
+
     const onChangeColor = (e) => {
         const { value } = e.target;
         setData("color", value);
@@ -62,6 +76,11 @@ export default function Create({ auth, colors, sizes }){
     const onChangeSize = (e) => {
         const { value } = e.target;
         setData("size", value);
+    };
+
+    const onChangeCategory = (e) => {
+        const { value } = e.target;
+        setData("category", value);
     };
 
     return(
@@ -84,7 +103,7 @@ export default function Create({ auth, colors, sizes }){
                             className="mt-1 block w-full"
                             isFocused={true}
                             onChange={(e) => setData("name", e.target.value)}
-                            placeholder="Ingrese Nombre"
+                            placeholder="Nombre"
                             />
                             <InputError
                             message={errors.name} className="mt-2"
@@ -110,6 +129,28 @@ export default function Create({ auth, colors, sizes }){
 
                         <div className="mt-4">
                             <InputLabel 
+                            htmlFor="product_sleeve"
+                            value="Tipo de Manga"
+                            />
+                            <SelectInput
+                            name="sleeve"
+                            id="product_sleeve"
+                            className="mt-1 block w-full"
+                            onChange={(e) => setData("sleeve", e.target.value)}
+                            >
+                                <option value="">Seleccione Manga</option>
+                                <option value="CORTO">Corto</option>
+                                <option value="LARGO">Largo</option>
+                                <option value="SIN MANGA">Sin Manga</option>
+                                <option value="3/4">3/4</option>
+                            </SelectInput>
+                            <InputError
+                            message={errors.sleeve} className="mt-2"
+                            />
+                        </div>
+
+                        <div className="mt-4">
+                            <InputLabel 
                             htmlFor="product_price"
                             value="Precio"
                             />
@@ -121,7 +162,7 @@ export default function Create({ auth, colors, sizes }){
                             className="mt-1 block w-full"
                             isFocused={true}
                             onChange={(e) => setData("price", e.target.value)}
-                            placeholder="Ingrese Precio del Producto"
+                            placeholder="Precio"
                             />
                             <InputError
                             message={errors.price} className="mt-2"
@@ -141,7 +182,7 @@ export default function Create({ auth, colors, sizes }){
                             className="mt-1 block w-full"
                             isFocused={true}
                             onChange={(e) => setData("stock", e.target.value)}
-                            placeholder="Ingrese Stock del Producto"
+                            placeholder="Stock"
                             />
                             <InputError
                             message={errors.stock} className="mt-2"
@@ -239,6 +280,45 @@ export default function Create({ auth, colors, sizes }){
                             </PrimaryButton>
                         </div>
 
+                        <div className="mt-4">
+                            <InputLabel 
+                            htmlFor="product_categories"
+                            value="Categorias Disponibles"
+                            />
+                            {categories.length === 0 ? (
+                                <>
+                                    <p>No hay categorias disponibles.</p>
+                                </>
+                            ) : (
+                                categories.map(category => (
+                                    <label key={category.id} className="inline-flex items-center mt-2 mr-10">
+                                        <Checkbox
+                                            id={`category_${category.id}`}
+                                            name="selectedCategories"
+                                            value={category.id}
+                                            checked={data.selectedCategories.includes(category.id)}
+                                            onChange={(e) => {
+                                                const isChecked = e.target.checked;
+                                                setData("selectedCategories", isChecked ? [...data.selectedCategories, category.id] : data.selectedCategories.filter(id => id !== category.id));
+                                            }}
+                                        />
+                                        <InputError
+                                        message={errors.selectedCategories} className="mt-2"
+                                        />
+                                        <span className="ml-2">{category.name}</span>
+                                    </label>
+                                ))
+                            )}
+
+                            <PrimaryButton
+                                onClick={addNewCategory}
+                                type="button"
+                                className="block text-white bg-emerald-600 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-emerald-700 dark:focus:ring-blue-800 mt-2"
+                            >
+                                NUEVA CATEGORÍA
+                            </PrimaryButton>
+                        </div>
+
                         <div className="mt-4 text-right">
                             <Link href={route("product.index")}
                             className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
@@ -275,7 +355,7 @@ export default function Create({ auth, colors, sizes }){
                                     className="mt-1 block w-full"
                                     isFocused={true}
                                     onChange={onChangeColor}
-                                    placeholder="Ingrese Color"
+                                    placeholder="Color"
                                     required
                                 />
                                 <InputError
@@ -322,11 +402,58 @@ export default function Create({ auth, colors, sizes }){
                                     className="mt-1 block w-full"
                                     isFocused={true}
                                     onChange={onChangeSize}
-                                    placeholder="Ingrese Talla"
+                                    placeholder="Talla"
                                     required
                                 />
                                 <InputError
                                     message={errors.size} className="mt-2"
+                                />
+                                <PrimaryButton
+                                    type="submit"
+                                    className="mt-2"
+                                >
+                                    AGREGAR
+                                </PrimaryButton>
+                                <DangerButton
+                                    type="button"
+                                    onClick={closeModal}
+                                    className="ms-2">
+                                    CANCELAR
+                                </DangerButton>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal show={confirmingNewCategory} onClose={closeModal}>
+                <div class="relative p-4 w-full max-h-full">
+                    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                        <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                Nueva Categoría
+                            </h3>
+                        </div>
+                        <div className="p-4 md:p-5">
+                            <form onSubmit={submitNewCategory} className="space-y-4">
+                                <div>
+                                <InputLabel 
+                                    htmlFor="new_category"
+                                    value="Categoría"/>
+                                <TextInput
+                                    id="new_category"
+                                    type="text"
+                                    value={data.category}
+                                    name="category"
+                                    className="mt-1 block w-full"
+                                    isFocused={true}
+                                    onChange={onChangeCategory}
+                                    placeholder="Categoría"
+                                    required
+                                />
+                                <InputError
+                                    message={errors.category} className="mt-2"
                                 />
                                 <PrimaryButton
                                     type="submit"

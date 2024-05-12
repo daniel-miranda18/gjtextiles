@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class ColorsProduct
+ * Class CategoriesProduct
  *
  * @property $id
  * @property $product_id
- * @property $color_id
+ * @property $category_id
  * @property $created_at
  * @property $updated_at
  *
- * @property Color $color
+ * @property Category $category
  * @property Product $product
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
-class ColorsProduct extends Model
+class CategoriesProduct extends Model
 {
     
     protected $perPage = 20;
@@ -28,14 +28,15 @@ class ColorsProduct extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['product_id', 'color_id', 'image'];
+    protected $fillable = ['product_id', 'category_id'];
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function color()
+    public function category()
     {
-        return $this->belongsTo(\App\Models\Color::class, 'color_id', 'id');
+        return $this->belongsTo(\App\Models\Category::class, 'category_id', 'id');
     }
     
     /**
