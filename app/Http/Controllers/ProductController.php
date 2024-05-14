@@ -12,7 +12,6 @@ use App\Models\CategoriesProduct;
 use App\Models\ImagesProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;

@@ -27,11 +27,14 @@ export default function Authenticated({ user, header, children }) {
                                     <>
                                         {user.role === 'ADMIN' ? (
                                             <>
-                                                <NavLink href={route('dashboard')} active={route().current('dashboard')}>
+                                                <NavLink href={route('dashboard')} active={route().current('dashboard')} iconClass="fas fa-tachometer-alt">
                                                     Panel
                                                 </NavLink>
-                                                <NavLink href={route('product.index')} active={route().current('product.index')}>
+                                                <NavLink href={route('product.index')} active={route().current('product.index')} iconClass="fas fa-tshirt">
                                                     Productos
+                                                </NavLink>
+                                                <NavLink href={route('design.index')} active={route().current('design.index')} iconClass="fas fa-paint-brush">
+                                                    Diseños
                                                 </NavLink>
                                             </>
                                         ) : (
