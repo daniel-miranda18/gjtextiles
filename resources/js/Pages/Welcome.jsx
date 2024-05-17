@@ -1,11 +1,14 @@
 import { Link, Head } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
-export default function Welcome({ auth }) {
+export default function Welcome({ auth, success }) {
     const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
     return (
         <AuthenticatedLayout user={auth.user}>
         <Head title="Inicio" />
+        {success && (<div className="bg-emerald-500 py-2 px-4 text-white rounded-lg my-10 mx-10">
+            {success}
+        </div>)}
         <section class="bg-gradient-to-b from-white to-indigo-700 text-white mt-1">
             <div class="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
                 <div class="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">

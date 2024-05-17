@@ -13,11 +13,11 @@ export default function VerifyEmail({ status }) {
 
     return (
         <GuestLayout>
-            <Head title="Email Verification" />
+            <Head title="Verificación de Correo Electrónico" />
 
             <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-            Gracias por registrarte! Antes de comenzar, ¿podría verificar su dirección de correo electrónico haciendo clic en el
-                enlace que le acabamos de enviar por correo electrónico? Si no recibió el correo electrónico, con gusto le enviaremos otro.
+                "¡Gracias por registrarte! Por favor, verifica tu correo electrónico 
+                haciendo clic en al enlace enviado. Si no lo encuentras, te enviaremos otro."
             </div>
 
             {status === 'verification-link-sent' && (

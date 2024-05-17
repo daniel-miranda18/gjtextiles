@@ -28,11 +28,9 @@ class ProductController extends Controller
     public function index()
     {
         $user = auth()->user();
-    
         if ($user->role !== 'ADMIN') {
             abort(403, 'No tienes permiso para acceder a esta página.');
         }
-
         $query = Product::query();
         $products = $query->paginate(10)->onEachSide(1);
         return inertia("Product/Index", [
@@ -44,9 +42,7 @@ class ProductController extends Controller
     public function catalog(ProductRequest $request)
     {
         $query = Product::query();
-
         $searchTerm = $request->input('search');
-
         if ($searchTerm) {
             $query->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'like', '%' . $searchTerm . '%')
@@ -56,9 +52,7 @@ class ProductController extends Controller
                     ->orWhere('sleeve', 'like', '%' . $searchTerm . '%');
             });
         }
-         
         $products = $query->with('colors', 'images')->paginate(15)->onEachSide(1);
-        
         return inertia("Product/Catalog", [
             "products" => ProductResource::collection($products),
             "searchTerm" => $searchTerm,
@@ -83,15 +77,12 @@ class ProductController extends Controller
     public function create()
     {
         $user = auth()->user();
-
         if ($user->role !== 'ADMIN') {
             abort(403, 'No tienes permiso para acceder a esta página.');
         }
-
         $colors = Color::all();
         $sizes = Size::all();
         $categories = Category::all();
-
         return inertia("Product/Create", [
             'colors' => $colors,
             'sizes' => $sizes,
@@ -105,20 +96,16 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $data = $request->validated();
-        
         $product = Product::create($data);
         if ($request->has('selectedColors')) {
             $product->colors()->attach($request->selectedColors);
         }
-    
         if ($request->has('selectedSizes')) {
             $product->sizes()->attach($request->selectedSizes);
         }
-
         if ($request->has('selectedCategories')) {
             $product->categories()->attach($request->selectedCategories);
         }
-        
         foreach ($request->colorImages as $imageData) {
             $path = $imageData['file']->store('images', 'public');
             $product->images()->create([
@@ -133,15 +120,24 @@ class ProductController extends Controller
 
     public function details($id)
     {
-       
+        
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
+        $product = Product::findOrFail($id);
+        $colors = $product->colors()->get();
+        $sizes = $product->sizes()->get();
+        $images = $product->colors()->with('images')->get();
+        return inertia('Product/Show', [
+            'product' => $product,
+            'colors' => $colors,
+            'sizes' => $sizes,
+            'images' => $images,
+        ]);
     }
 
     /**

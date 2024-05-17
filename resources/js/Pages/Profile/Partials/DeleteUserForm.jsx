@@ -49,8 +49,7 @@ export default function DeleteUserForm({ className = '' }) {
                 <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">Eliminar Cuenta</h2>
 
                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    Una vez que se elimine su cuenta, todos sus recursos y datos se eliminarán permanentemente. Antes
-                    Al eliminar su cuenta, descargue cualquier dato o información que desee conservar.
+                    Al eliminar su cuenta, todos sus datos y recursos se borrarán permanentemente. 
                 </p>
             </header>
 
@@ -63,8 +62,7 @@ export default function DeleteUserForm({ className = '' }) {
                     </h2>
 
                     <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        Una vez que se elimine su cuenta, todos sus recursos y datos se eliminarán permanentemente. Por favor
-                        ingrese su contraseña para confirmar que desea eliminar permanentemente su cuenta.
+                        Para eliminar permanentemente tu cuenta, por favor confirma ingresando tu contraseña.
                     </p>
 
                     <div className="mt-6">
