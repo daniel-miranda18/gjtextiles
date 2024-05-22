@@ -13,14 +13,17 @@ export default function Show({ auth, product, colors, sizes, images }) {
                 <div>
                   <div>
                     <label className="font-bold text-lg">Nombre</label>
+                    <hr />
                     <p className="mt-1">{product.name}</p>
                   </div>
                   <div className="mt-4">
                     <label className="font-bold text-lg">Descripción</label>
+                    <hr />
                     <p className="mt-1">{product.description}</p>
                   </div>
                     <div className="mt-4">
                         <label className="font-bold text-lg">Tallas Disponibles</label>
+                        <hr />
                         <div className="flex flex-wrap mt-1">
                             {sizes.map(size => (
                                 <div key={size.id} className="mr-4 mb-4">
@@ -33,24 +36,33 @@ export default function Show({ auth, product, colors, sizes, images }) {
                 <div>
                   <div>
                     <label className="font-bold text-lg">Tipo de Manga</label>
+                    <hr />
                     <p className="mt-1">{product.sleeve}</p>
                   </div>
                   <div className="mt-4">
                     <label className="font-bold text-lg">Precio</label>
+                    <hr />
                     <p className="mt-1">{product.price}</p>
                   </div>
                   <div className="mt-4">
                     <label className="font-bold text-lg">Stock</label>
+                    <hr />
                     <p className="mt-1">{product.stock}</p>
                   </div>
                   <div className="mt-4">
                     <label className="font-bold text-lg">Publicado</label>
-                    <p className="mt-1">{product.published ? 'Sí' : 'No'}</p>
+                    <hr />
+                      <p className="mt-1">
+                        <span class="bg-blue-100 text-blue-800 text-xl font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-red-400 border border-blue-400">
+                          {product.published ? 'Sí' : 'No'}
+                        </span>
+                      </p>
                   </div>
                 </div>
               </div>
               <div className="mt-4">
                 <label className="font-bold text-lg">Colores Disponibles</label>
+                <hr />
                 <div className="mt-1 grid grid-cols-2 gap-4">
                     {colors.map(color => (
                         <>

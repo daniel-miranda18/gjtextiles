@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
 
 class VerifyEmailController extends Controller
 {
@@ -24,7 +25,6 @@ class VerifyEmailController extends Controller
                 'success' => 'Se verificó exitosamente el correo electrónico'
             ]);
         }
-    
         return $response;
     }
 }

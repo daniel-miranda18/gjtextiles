@@ -169,6 +169,13 @@ class ProductController extends Controller
 
     }
 
+
+    public function patch(Request $request, Product $product)
+    {
+
+    }
+
+
     /**
      * Remove the specified resource from storage.
      */
