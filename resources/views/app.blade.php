@@ -21,6 +21,14 @@
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
-        @inertia
+    <h2>Product: Laptop</h2>
+    <h3>Price: $20</h3>
+    <form action="{{ route('paypal') }}" method="post">
+        @csrf
+        <input type="hidden" name="price" value="20">
+        <input type="hidden" name="product_name" value="Laptop">
+        <input type="hidden" name="quantity" value="1">
+        <button type="submit">Pay with PayPal</button>
+    </form>
     </body>
 </html>
