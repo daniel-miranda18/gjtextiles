@@ -8,6 +8,7 @@ use App\Http\Controllers\SizeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColorsProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaypalController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,5 +39,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::post('paypal', [PaypalController::class, 'paypal'])->name('paypal');
+Route::get('success', [PaypalController::class, 'success'])->name('success');
+Route::get('cancel', [PaypalController::class, 'cancel'])->name('cancel');
 
 require __DIR__.'/auth.php';
