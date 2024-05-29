@@ -8,6 +8,7 @@ use App\Http\Controllers\SizeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColorsProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\CartItemController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,23 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    //Route::get('/paypal/create', [PayPalController::class, 'createTransaction'])->name('paypal.create');
+    //Route::post('/paypal/process', [PayPalController::class, 'processTransaction'])->name('paypal.process');
+    //Route::get('/paypal/success', [PayPalController::class, 'successTransaction'])->name('paypal.success');
+    //Route::get('/paypal/cancel', [PayPalController::class, 'cancelTransaction'])->name('paypal.cancel');
+    //Route::get('/paypal/error', [PayPalController::class, 'errorTransaction'])->name('paypal.error');
+ 
+    Route::get('paypal/payment', [PayPalController::class, 'createTransaction'])->name('paypal.payment');
+    Route::post('paypal/process', [PayPalController::class, 'processTransaction'])->name('paypal.processTransaction');
+    Route::get('paypal/success', [PayPalController::class, 'successTransaction'])->name('paypal.successTransaction');
+    Route::get('paypal/cancel', [PayPalController::class, 'cancelTransaction'])->name('paypal.cancelTransaction');
+    Route::get('paypal/error', [PayPalController::class, 'errorTransaction'])->name('paypal.errorTransaction');
+ 
+    Route::get('paypal/success/view', [PayPalController::class, 'successView'])->name('paypal.success');
+    Route::get('paypal/cancel/view', [PayPalController::class, 'cancelView'])->name('paypal.cancel');
 });
 
 require __DIR__.'/auth.php';
