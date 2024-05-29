@@ -7,7 +7,6 @@ export default function Modal({ children, show = false, maxWidth = '2xl', closea
             onClose();
         }
     };
-
     const maxWidthClass = {
         sm: 'sm:max-w-sm',
         md: 'sm:max-w-md',

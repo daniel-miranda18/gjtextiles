@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class ProductResource extends JsonResource
 {
@@ -23,6 +24,8 @@ class ProductResource extends JsonResource
             'sleeve' => $this->sleeve,
             'price' => $this->price,
             'stock' => $this->stock,
+            'published' => $this->published,
+            'created_at' => (new Carbon($this->created_at))->format('Y-m-d'),
             'colors' => $this->colors,
             'images' => $this->images,
         ];

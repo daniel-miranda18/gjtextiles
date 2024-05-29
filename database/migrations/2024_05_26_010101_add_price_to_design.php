@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->boolean('published')->default(true)->after('stock');
+        Schema::table('designs', function (Blueprint $table) {
+            $table->integer('price')->unsigned()->nullable()->default()->after('name');
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('products', function (Blueprint $table) {
+        Schema::table('designs', function (Blueprint $table) {
             //
         });
     }

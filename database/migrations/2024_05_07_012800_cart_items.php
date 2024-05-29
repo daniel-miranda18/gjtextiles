@@ -18,12 +18,14 @@ return new class extends Migration
             $table->bigInteger('product_id')->unsigned();
             $table->bigInteger('color_id')->unsigned();
             $table->bigInteger('size_id')->unsigned();
+            $table->bigInteger('design_id')->unsigned()->nullable();
             $table->integer('quantity')->unsigned()->default();
             $table->timestamps();
             $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('color_id')->references('id')->on('colors')->onDelete('cascade');
             $table->foreign('size_id')->references('id')->on('sizes')->onDelete('cascade');
+            $table->foreign('design_id')->references('id')->on('designs')->onDelete('cascade');
         });
     }
 

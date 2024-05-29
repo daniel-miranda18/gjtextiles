@@ -33,6 +33,7 @@ class CategoryController extends Controller
         $category = new Category();
         $category->name = $request->input('category');
         $category->save();
+        return response()->json(['name' => $category->name], 201);
     }
 
     /**

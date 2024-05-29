@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property $product_id
  * @property $color_id
  * @property $size_id
+ * @property $design_id
  * @property $quantity
  * @property $created_at
  * @property $updated_at
@@ -20,6 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property Color $color
  * @property Product $product
  * @property Size $size
+ * @property Design $design
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
@@ -33,8 +35,7 @@ class CartItem extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['cart_id', 'product_id', 'color_id', 'size_id', 'quantity'];
-
+    protected $fillable = ['cart_id', 'product_id', 'color_id', 'size_id', 'design_id', 'quantity'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -66,5 +67,13 @@ class CartItem extends Model
     public function size()
     {
         return $this->belongsTo(\App\Models\Size::class, 'size_id', 'id');
+    }
+
+   /**
+    * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+    */
+    public function design()
+    {
+        return $this->belongsTo(\App\Models\Design::class, 'design_id', 'id');
     }
 }

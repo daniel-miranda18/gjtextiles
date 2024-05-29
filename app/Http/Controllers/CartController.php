@@ -60,6 +60,7 @@ class CartController extends Controller
         $productId = $request->input('product_id');
         $colorId = $request->input('color_id');
         $sizeId = $request->input('size_id');
+        $designId = $request->input('design_id');
         $quantity = $request->input('quantity');
         
         if (!$user->cart) {
@@ -80,14 +81,13 @@ class CartController extends Controller
                 'product_id' => $productId,
                 'color_id' => $colorId,
                 'size_id' => $sizeId,
+                'design_id' => $designId,
                 'quantity' => $quantity,
             ]);
             return redirect()->route('cart.index')
                             ->with('success', 'Producto agregado al carrito exitosamente.');
         }
     }
-
-
 
     /**
      * Display the specified resource.

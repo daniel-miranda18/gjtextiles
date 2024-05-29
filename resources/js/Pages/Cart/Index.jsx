@@ -1,10 +1,33 @@
-import { Pagination } from '@/Components/Pagination';
+import Modal from '@/Components/Modal';
+import { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import Alert from '@/Components/Alert';
-
-
 export default function Index({ auth, cartItems, success, warning, info }) {
+    const [confirmingDeleteItem, setItem] = useState(false);
+    const [deleteItemId, setDeleteItemId] = useState(null);
+    const [total, setTotal] = useState(0);
+    const closeModal = () => {
+        setItem(false);
+    };
+    const calculateTotal = () => {
+        let totalPrice = 0;
+        cartItems.forEach(item => {
+            totalPrice += (item.quantity * item.product.price);
+        });
+        setTotal(totalPrice);
+    };
+    useEffect(() => {
+        calculateTotal();
+    }, [cartItems]);
+    const deleteItem = (itemId) => {
+        setDeleteItemId(itemId);
+        setItem(true);
+    };
+    const handleDeleteItem = () => {
+        axios.delete(`/cart_item/${deleteItemId}`)
+        window.location.reload();
+    };
     return (
         <AuthenticatedLayout
             user={auth.user}>
@@ -34,7 +57,6 @@ export default function Index({ auth, cartItems, success, warning, info }) {
                 {info}
                 </div>
             </div>)}
-
             <section class="py-8 relative">
                 <div class="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto">
                     <h2 class="title font-manrope font-bold text-4xl leading-10 mb-8 text-center text-black">
@@ -48,6 +70,7 @@ export default function Index({ auth, cartItems, success, warning, info }) {
                                     <span class="w-full max-w-[200px] text-center">Cantidad</span>
                                     <span class="w-full max-w-[200px] text-center">Precio Unitario</span>
                                     <span class="w-full max-w-[200px] text-center">Total</span>
+                                    <span class="w-full max-w-[200px] text-center">Opciones</span>
                                 </p>
                             </div>
                             {cartItems.map((item) => ( 
@@ -65,7 +88,6 @@ export default function Index({ auth, cartItems, success, warning, info }) {
                                                 {item.product.name}
                                             </h5>
                                             <p class="font-normal text-lg leading-8 text-gray-500 my-2 min-[550px]:my-3 max-[550px]:text-center">
-                                                Perfumes
                                             </p>
                                             <h6 class="font-medium text-lg leading-8 text-indigo-600  max-[550px]:text-center">
                                                 Bs. {item.product.price}
@@ -79,28 +101,38 @@ export default function Index({ auth, cartItems, success, warning, info }) {
                                                 (Cantidad)
                                             </span>
                                         </h6>
-                                        <h6 class="font-manrope font-bold text-xl leading-9 text-black w-full ms-16 max-w-[176px] text-center">
+                                        <h6 class="font-manrope font-bold text-xl leading-9 text-black w-full ms-2 max-w-[176px] text-center">
                                             Bs. {item.product.price}
                                             <span class="text-sm text-gray-300 ml-3 lg:hidden whitespace-nowrap">
                                                 (Precio)
                                             </span>
                                         </h6>
-                                        <div class="flex items-center w-full mx-auto justify-center">
-                                        </div>
-                                        <h6 class="text-indigo-600 font-manrope font-bold text-xl leading-9 me-16 w-full max-w-[176px] text-center">
+                                        <h6 class="text-indigo-600 font-manrope font-bold text-xl leading-9 ms-3 w-full max-w-[176px] text-center">
                                             Bs. {(item.quantity * item.product.price)}
                                         </h6>
+                                        <div class="flex items-center w-full mx-auto justify-center me-16">
+                                        <button
+                                            onClick={() => deleteItem(item.id)}
+                                            type="button" 
+                                            className="bg-red-500 hover:bg-red-400 text-white font-bold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded ms-10"
+                                        >
+                                            Quitar
+                                        </button>
+
+                                        </div>
                                     </div>
                                 </div>
                             ))}
                             <div class="bg-gray-50 rounded-xl p-6 w-full mb-8 max-lg:max-w-xl max-lg:mx-auto">
                                 <div class="flex items-center justify-between w-full mb-6">
                                     <p class="font-normal text-xl leading-8 text-gray-400">Sub Total</p>
-                                    <h6 class="font-semibold text-xl leading-8 text-gray-900">$360.00</h6>
+                                    <h6 class="font-semibold text-xl leading-8 text-gray-900"></h6>
                                 </div>
                                 <div class="flex items-center justify-between w-full py-6">
                                     <p class="font-manrope font-medium text-2xl leading-9 text-gray-900">Total</p>
-                                    <h6 class="font-manrope font-medium text-2xl leading-9 text-indigo-500">$405.00</h6>
+                                    <h6 class="font-manrope font-medium text-2xl leading-9 text-indigo-500">
+                                    Bs. {total.toFixed(2)}
+                                    </h6>
                                 </div>
                             </div>
                             <div class="flex items-center flex-col sm:flex-row justify-center gap-3 mt-8">
@@ -126,6 +158,38 @@ export default function Index({ auth, cartItems, success, warning, info }) {
                         </div>
                     )}
                 </div>
+
+                <Modal show={confirmingDeleteItem} onClose={closeModal}>
+                    <div className="relative p-4 w-full max-h-full">
+                        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                    ¡Confirmación necesaria!
+                                </h3>
+                            </div>
+                            <div className="p-4 md:p-5">
+                                <p className="text-gray-700 dark:text-gray-300">
+                                    ¿Estás seguro/a de que quieres quitar este producto del carrito?
+                                </p>
+                            </div>
+                            <div className="flex justify-end px-4 py-3 bg-gray-100 dark:bg-gray-800 dark:border-gray-600 rounded-b">
+                                <button
+                                    onClick={closeModal}
+                                    className="text-gray-500 dark:text-gray-400 bg-transparent font-semibold py-2 px-4 border border-gray-400 rounded mr-2 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={handleDeleteItem}
+                                    className="text-white bg-red-500 hover:bg-red-600 font-semibold py-2 px-4 border border-red-600 rounded transition-all duration-300"
+                                >
+                                    Quitar Producto
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </Modal>
+
             </section>
         </AuthenticatedLayout>
     );

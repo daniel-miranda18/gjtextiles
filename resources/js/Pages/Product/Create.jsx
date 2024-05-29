@@ -10,20 +10,25 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import DangerButton from '@/Components/DangerButton';
 import SelectInput from '@/Components/SelectInput';
+import axios from 'axios';
 
 export default function Create({ auth, colors, sizes, categories }){
     const [confirmingNewColor, setNewColor] = useState(false);
     const [confirmingNewSize, setNewSize] = useState(false);
     const [confirmingNewCategory, setNewCategory] = useState(false);
-    const {data, setData, post, errors, reset} = useForm({
+    const {data, setData, post, errors} = useForm({
         name: "",
         description: "",
+        sleeve: "",
         price: "",
         stock: "",
         selectedColors: [],
         selectedSizes: [],
         selectedCategories: [],
         colorImages: [],
+        color: "",
+        size: "",
+        category: "",
     });
 
     const onSubmit = (e) => {
@@ -47,40 +52,42 @@ export default function Create({ auth, colors, sizes, categories }){
         setNewColor(false);
         setNewSize(false);
         setNewCategory(false);
-        reset();
     };
 
-    const submitNewColor = (e) => {
+    const submitNewColor = async (e) => {
         e.preventDefault();
-        post(route("color.store"));
-        closeModal();
+        try {
+            const response = await axios.post(route("color.store"), { color: data.color });
+            const newColor = response.data;
+            colors.push(newColor);
+            closeModal();
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    const submitNewSize = (e) => {
+    const submitNewSize = async (e) => {
         e.preventDefault();
-        post(route("size.store"));
-        closeModal();
+        try {
+            const response = await axios.post(route("size.store"), { size: data.size });
+            const newSize = response.data;
+            sizes.push(newSize);
+            closeModal();
+        } catch (error) {
+            console.error(error);
+        }
     };
 
-    const submitNewCategory = (e) => {
+    const submitNewCategory = async (e) => {
         e.preventDefault();
-        post(route("category.store"));
-        closeModal();
-    };
-
-    const onChangeColor = (e) => {
-        const { value } = e.target;
-        setData("color", value);
-    };
-
-    const onChangeSize = (e) => {
-        const { value } = e.target;
-        setData("size", value);
-    };
-
-    const onChangeCategory = (e) => {
-        const { value } = e.target;
-        setData("category", value);
+        try {
+            const response = await axios.post(route("category.store"), { category: data.category });
+            const newCategory = response.data;
+            categories.push(newCategory);
+            closeModal();
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return(
@@ -89,7 +96,7 @@ export default function Create({ auth, colors, sizes, categories }){
             <div className="py-5">
                 <div className=" dark:bg-gray-800 overflow-hidden sm:rounded-lg mx-10 shadow-lg">
                     <form onSubmit={onSubmit}
-                    className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                    className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">  
                         <div>
                             <InputLabel 
                             htmlFor="product_name"
@@ -101,7 +108,6 @@ export default function Create({ auth, colors, sizes, categories }){
                             name="name"
                             value={data.name}
                             className="mt-1 block w-full"
-                            isFocused={true}
                             onChange={(e) => setData("name", e.target.value)}
                             placeholder="Nombre"
                             />
@@ -136,6 +142,7 @@ export default function Create({ auth, colors, sizes, categories }){
                             name="sleeve"
                             id="product_sleeve"
                             className="mt-1 block w-full"
+                            value={data.sleeve}
                             onChange={(e) => setData("sleeve", e.target.value)}
                             >
                                 <option value="">Seleccione Manga</option>
@@ -160,7 +167,6 @@ export default function Create({ auth, colors, sizes, categories }){
                             name="price"
                             value={data.price}
                             className="mt-1 block w-full"
-                            isFocused={true}
                             onChange={(e) => setData("price", e.target.value)}
                             placeholder="Precio"
                             />
@@ -180,7 +186,6 @@ export default function Create({ auth, colors, sizes, categories }){
                             name="stock"
                             value={data.stock}
                             className="mt-1 block w-full"
-                            isFocused={true}
                             onChange={(e) => setData("stock", e.target.value)}
                             placeholder="Stock"
                             />
@@ -211,6 +216,7 @@ export default function Create({ auth, colors, sizes, categories }){
                                         <InputError
                                         message={errors.selectedColors} className="mt-2"
                                         />
+                                        
                                         <span className="mx-4">{color.name}</span>
                                         {data.selectedColors.includes(color.id) && (
                                             <>
@@ -356,8 +362,7 @@ export default function Create({ auth, colors, sizes, categories }){
                                     value={data.color}
                                     name="color"
                                     className="mt-1 block w-full"
-                                    isFocused={true}
-                                    onChange={onChangeColor}
+                                    onChange={(e) => setData("color", e.target.value)}
                                     placeholder="Color"
                                     required
                                 />
@@ -375,7 +380,7 @@ export default function Create({ auth, colors, sizes, categories }){
                                     onClick={closeModal}
                                     className="ms-2">
                                     CANCELAR
-                                </DangerButton>
+                                    </DangerButton>
                                 </div>
                             </form>
                         </div>
@@ -403,8 +408,7 @@ export default function Create({ auth, colors, sizes, categories }){
                                     value={data.size}
                                     name="size"
                                     className="mt-1 block w-full"
-                                    isFocused={true}
-                                    onChange={onChangeSize}
+                                    onChange={(e) => setData("size", e.target.value)}
                                     placeholder="Talla"
                                     required
                                 />
@@ -450,8 +454,7 @@ export default function Create({ auth, colors, sizes, categories }){
                                     value={data.category}
                                     name="category"
                                     className="mt-1 block w-full"
-                                    isFocused={true}
-                                    onChange={onChangeCategory}
+                                    onChange={(e) => setData("category", e.target.value)}
                                     placeholder="Categoría"
                                     required
                                 />

@@ -19,6 +19,7 @@ use App\Http\Requests\ProductRequest;
 use App\Http\Requests\SizesProductRequest;
 use App\Http\Requests\ColorsProductRequest;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class ProductController extends Controller
 {
@@ -32,9 +33,15 @@ class ProductController extends Controller
             abort(403, 'No tienes permiso para acceder a esta página.');
         }
         $query = Product::query();
-        $products = $query->paginate(10)->onEachSide(1);
+        $sortField = request("sort_field", 'created_at');
+        $sortDirection = request("sort_direction", "desc");
+        if (request("name")) {
+            $query->where("name", "like", "%" . request("name") . "%");
+        }
+        $products = $query->orderBy($sortField, $sortDirection)->paginate(10)->onEachSide(1);
         return inertia("Product/Index", [
             "products" => ProductResource::collection($products),
+            'queryParams' => request()->query() ?: null,
             'success' => session('success'),
         ]);
     }
@@ -43,6 +50,10 @@ class ProductController extends Controller
     {
         $query = Product::query();
         $searchTerm = $request->input('search');
+        $categoryName = $request->input('category');
+        $sleeveType = $request->input('sleeve');
+        $filter = $request->input('filter');
+
         if ($searchTerm) {
             $query->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'like', '%' . $searchTerm . '%')
@@ -52,15 +63,37 @@ class ProductController extends Controller
                     ->orWhere('sleeve', 'like', '%' . $searchTerm . '%');
             });
         }
+
+        if ($categoryName) {
+            $query->whereHas('categories', function ($query) use ($categoryName) {
+                $query->where('name', $categoryName);
+            })->doesntHave('categories', 'and', function ($query) use ($categoryName) {
+                $query->where('name', '<>', $categoryName);
+            });
+        }
+
+        if ($sleeveType) {
+            $query->where('sleeve', $sleeveType);
+        }
+
+        if ($filter === 'newest') {
+            $oneWeekAgo = Carbon::now()->subWeek();
+            $query->where('created_at', '>=', $oneWeekAgo);
+        }
+
         $products = $query->with('colors', 'images')->paginate(15)->onEachSide(1);
+
         return inertia("Product/Catalog", [
             "products" => ProductResource::collection($products),
             "searchTerm" => $searchTerm,
         ]);
     }
 
-    public function personalize($id)
+    public function personalize($id, Request $request)
     {
+        $designDetails = $request->query('design_details');
+        $design = json_decode(urldecode($designDetails));
+
         $product = Product::with('sizes', 'colors.images')->findOrFail($id);
         $sizes = $product->sizes;
         $colors = $product->colors;
@@ -68,6 +101,7 @@ class ProductController extends Controller
             "product" => $product,
             "sizes" => $sizes,
             "colors" => $colors,
+            "design" => $design,
         ]);
     }
 
@@ -146,28 +180,41 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::findOrFail($id);
-        $allColors = Color::all();
         $allSizes = Size::all();
-        $selectedColors = $product->colors()->get();
+        $allCategories = Category::all();
         $selectedSizes = $product->sizes()->get();
-        $selectedColorsWithImages = $product->colors()->with('images')->get();
+        $selectedCategories = $product->categories()->get();
         return inertia('Product/Edit', [
             'product' => $product,
-            'allColors' => $allColors,
             'allSizes' => $allSizes,
-            'selectedColors' => $selectedColors,
+            'allCategories' => $allCategories,
             'selectedSizes' => $selectedSizes,
-            'selectedColorsWithImages' => $selectedColorsWithImages,
+            'selectedCategories' => $selectedCategories,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(Request $request, $id)
     {
+        $product = Product::findOrFail($id);
 
+        $product->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'sleeve' => $request->sleeve,
+            'price' => $request->price,
+            'stock' => $request->stock,
+        ]);
+
+        $product->colors()->sync($request->selectedColors);
+        $product->sizes()->sync($request->selectedSizes);
+        $product->categories()->sync($request->selectedCategories);
+
+        return redirect()->route('product.index')->with('success', 'Producto actualizado exitosamente.');
     }
+
 
 
     public function patch(Request $request, Product $product)
@@ -181,6 +228,16 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->colors()->detach();
+        $product->sizes()->detach();
+        $product->categories()->detach();
+        foreach ($product->images as $image) {
+            Storage::disk('public')->delete($image->image);
+            $image->delete();
+        }
+        $product->delete();
+        return redirect()->route('product.index')
+            ->with('success', 'Producto eliminado exitosamente.');
     }
+
 }

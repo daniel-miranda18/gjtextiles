@@ -4,17 +4,19 @@ import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import TextAreaInput from '@/Components/TextAreaInput';
 import TextInput from '@/Components/TextInput';
+import SelectInput from '@/Components/SelectInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Edit({ auth, product, allColors, allSizes, selectedColors, selectedSizes, selectedColorsWithImages  }) {
+export default function Edit({ auth, product, allSizes, allCategories, selectedSizes, selectedCategories }) {
     const { data, setData, put, errors, reset } = useForm({
         name: product.name || "",
         description: product.description || "",
+        sleeve: product.sleeve || "",
         price: product.price || "",
         stock: product.stock || "",
-        selectedColors: selectedColors.map(color => color.id),
         selectedSizes: selectedSizes.map(size => size.id),
+        selectedCategories: selectedCategories.map(category => category.id),
         _method: "PUT",
     });
 
@@ -22,14 +24,14 @@ export default function Edit({ auth, product, allColors, allSizes, selectedColor
         reset({
             name: product.name || "",
             description: product.description || "",
+            sleeve: product.sleeve || "",
             price: product.price || "",
             stock: product.stock || "",
-            selectedColors: selectedColors.map(color => color.id),
             selectedSizes: selectedSizes.map(size => size.id),
+            selectedCategories: selectedCategories.map(category => category.id),
             _method: "PUT",
         });
     }, [product]);
-
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -43,6 +45,13 @@ export default function Edit({ auth, product, allColors, allSizes, selectedColor
                 <div className="dark:bg-gray-800 overflow-hidden sm:rounded-lg mx-10 shadow-lg">
                     <form onSubmit={onSubmit} className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                         <div>
+                            <label class="inline-flex items-center w-full cursor-pointer">
+                                <input type="checkbox" value="" class="sr-only peer"/>
+                                <div class="relative w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full rtl:peer-checked:after:translate-x-[-100%] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-500 peer-checked:bg-blue-600"></div>
+                                <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">PUBLICADO</span>
+                            </label>
+                        </div>
+                        <div className="mt-4">
                             <InputLabel
                                 htmlFor="product_name"
                                 value="Nombre"
@@ -77,6 +86,29 @@ export default function Edit({ auth, product, allColors, allSizes, selectedColor
                             <InputError
                                 message={errors.description}
                                 className="mt-2"
+                            />
+                        </div>
+
+                        <div className="mt-4">
+                            <InputLabel 
+                            htmlFor="product_sleeve"
+                            value="Tipo de Manga"
+                            />
+                            <SelectInput
+                            name="sleeve"
+                            id="product_sleeve"
+                            className="mt-1 block w-full"
+                            value={data.sleeve}
+                            onChange={(e) => setData("sleeve", e.target.value)}
+                            >
+                                <option value="">Seleccione Manga</option>
+                                <option value="CORTO">Corto</option>
+                                <option value="LARGO">Largo</option>
+                                <option value="SIN MANGA">Sin Manga</option>
+                                <option value="3/4">3/4</option>
+                            </SelectInput>
+                            <InputError
+                            message={errors.sleeve} className="mt-2"
                             />
                         </div>
 
@@ -118,53 +150,7 @@ export default function Edit({ auth, product, allColors, allSizes, selectedColor
                                 message={errors.stock}
                                 className="mt-2"
                             />
-                        </div>
-
-                        <div className="mt-4">
-                            <InputLabel htmlFor="product_colors" value="Colores Disponibles" />
-                            {allColors.map(color => (
-                                <div key={color.id} className="items-center mt-2 mx-auto">
-                                    <Checkbox
-                                        id={`color_${color.id}`}
-                                        name="selectedColors"
-                                        value={color.id}
-                                        checked={data.selectedColors.includes(color.id)}
-                                        onChange={(e) => {
-                                            const isChecked = e.target.checked;
-                                            setData("selectedColors", isChecked ? [...data.selectedColors, color.id] : data.selectedColors.filter(id => id !== color.id));
-                                        }}
-                                    />
-                                    <span className="mx-4">{color.name}</span>
-                                    {data.selectedColors.includes(color.id) && (
-                                        <>
-                                           {selectedColorsWithImages.map(color => (
-                                                <div key={color.id}>
-                                                    <h3>{color.image}</h3>
-                                                    <div>
-                                                        {color.images.filter(image => data.selectedColors.includes(color.id)).map(image => (
-                                                            <img key={image.id} src={image.image} alt={image.image} />
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                            <input
-                                                type="file"
-                                                name={`color_images_${color.id}`}
-                                                className="my-4 block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 file:bg-gray-50 file:border-0 file:me-4 file:py-3 file:px-4 dark:file:bg-neutral-700 dark:file:text-neutral-400"
-                                                accept="image/*"
-                                                onChange={(e) => {
-                                                    const file = e.target.files[0];
-                                                    const colorId = color.id;
-                                                    const updatedImages = [...data.colorImages, { colorId, file }];
-                                                    setData("colorImages", updatedImages);
-                                                }}
-                                            />
-                                            <p className="ms-10 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">PNG o JPG (MAX. 800x400px).</p>
-                                        </>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
+                        </div>    
 
                         <div className="mt-4">
                             <InputLabel
@@ -184,6 +170,28 @@ export default function Edit({ auth, product, allColors, allSizes, selectedColor
                                         }}
                                     />
                                     <span className="ml-2">{size.name}</span>
+                                </label>
+                            ))}
+                        </div>
+
+                        <div className="mt-4">
+                            <InputLabel
+                                htmlFor="product_categories"
+                                value="Categorías Disponibles"
+                            />
+                            {allCategories.map(category => (
+                                <label key={category.id} className="inline-flex items-center mt-2 mr-10">
+                                    <Checkbox
+                                        id={`category_${category.id}`}
+                                        name="selectedCategories"
+                                        value={category.id}
+                                        checked={data.selectedCategories.includes(category.id)}
+                                        onChange={(e) => {
+                                            const isChecked = e.target.checked;
+                                            setData("selectedCategories", isChecked ? [...data.selectedCategories, category.id] : data.selectedCategories.filter(id => id !== category.id));
+                                        }}
+                                    />
+                                    <span className="ml-2">{category.name}</span>
                                 </label>
                             ))}
                         </div>

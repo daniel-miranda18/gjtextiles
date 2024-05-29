@@ -22,7 +22,10 @@ class UpdateDesignRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "name" => ['required', 'max:255', 'min:3'],
+            "price" => ['required', 'numeric', 'min:0.01', 'regex:/^\d+(\.\d{1,2})?$/'],
+            'image' => ['nullable', 'image'],
+            "technique" => ['required'],
         ];
     }
 }

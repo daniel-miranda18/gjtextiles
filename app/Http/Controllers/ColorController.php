@@ -33,6 +33,7 @@ class ColorController extends Controller
         $color = new Color();
         $color->name = $request->input('color');
         $color->save();
+        return response()->json(['name' => $color->name], 201);
     }
 
     /**

@@ -23,7 +23,8 @@ class StoreDesignRequest extends FormRequest
     {
         return [
             "name" => ['required', 'max:255', 'min:3'],
-            'image' => ['nullable', 'image'],
+            "price" => ['required', 'numeric', 'min:0.01', 'regex:/^\d+(\.\d{1,2})?$/'],
+            "image" => ['required'],
             "technique" => ['required'],
         ];
     }

@@ -8,7 +8,7 @@ use App\Http\Controllers\SizeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ColorsProductController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\PaypalController;
+use App\Http\Controllers\CartItemController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,10 +25,13 @@ Route::get('/', function () {
 Route::get('/product/catalog', [ProductController::class, 'catalog'])->name('product.catalog');
 Route::get('/product/personalize/{id}', [ProductController::class, 'personalize'])->name('product.personalize');
 Route::resource('cart', CartController::class);
+Route::resource('cart_item', CartItemController::class);
+Route::get('/designs/list/{id}', [DesignController::class, 'list'])->name('design.list');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
     Route::resource('product', ProductController::class);
     Route::resource('design', DesignController::class);
+    Route::post('design/store_admin', [DesignController::class, 'store_admin'])->name('design.store_admin');
     Route::resource('color', ColorController::class);
     Route::resource('size', SizeController::class);
     Route::resource('category', CategoryController::class);
@@ -39,9 +42,5 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-Route::post('paypal', [PaypalController::class, 'paypal'])->name('paypal');
-Route::get('success', [PaypalController::class, 'success'])->name('success');
-Route::get('cancel', [PaypalController::class, 'cancel'])->name('cancel');
 
 require __DIR__.'/auth.php';

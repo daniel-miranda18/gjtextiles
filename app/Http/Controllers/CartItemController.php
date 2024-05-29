@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Size;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreSizeRequest;
-use App\Http\Requests\UpdateSizeRequest;
+use App\Models\CartItem;
+use Illuminate\Http\Request;
 
-class SizeController extends Controller
+class CartItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,18 +26,15 @@ class SizeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSizeRequest $request)
+    public function store(Request $request)
     {
-        $size = new Size();
-        $size->name = $request->input('size');
-        $size->save();
-        return response()->json(['name' => $size->name], 201);
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Size $size)
+    public function show(CartItem $cartItem)
     {
         //
     }
@@ -47,7 +42,7 @@ class SizeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Size $size)
+    public function edit(CartItem $cartItem)
     {
         //
     }
@@ -55,7 +50,7 @@ class SizeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSizeRequest $request, Size $size)
+    public function update(Request $request, CartItem $cartItem)
     {
         //
     }
@@ -63,8 +58,10 @@ class SizeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Size $size)
+    public function destroy(CartItem $cartItem)
     {
-        //
+        $cartItem->delete();
+        return redirect()->route('cart.index')
+                     ->with('success', '¡El producto se ha eliminado del carrito correctamente!');
     }
 }

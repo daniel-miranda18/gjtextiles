@@ -1,8 +1,7 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import React, { useState } from 'react';
 import Dropdown from '@/Components/Dropdown';
-import Alert from '@/Components/Alert';
 
 export default function Catalog({ auth, user, products, searchTerm }) {
     const [search, setSearch] = useState('');
@@ -62,10 +61,10 @@ export default function Catalog({ auth, user, products, searchTerm }) {
                     <div class="hidden w-full md:block md:w-auto">
                         <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                             <li>
-                                <a href="#" class="mt-2 block text-sm py-2 px-3 text-gray-500 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Todos los Productos</a>
+                                <a href="/product/catalog" class="mt-2 block text-sm py-2 px-3 text-gray-500 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Todos los Productos</a>
                             </li>
                             <li>
-                                <a href="#" class="mt-2 block text-sm py-2 px-3 text-gray-500 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Nuevos Productos</a>
+                                <a href="/product/catalog?filter=newest" class="mt-2 block text-sm py-2 px-3 text-gray-500 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Nuevos Productos</a>
                             </li>
                             <li>
                                 <Dropdown>
@@ -92,12 +91,10 @@ export default function Catalog({ auth, user, products, searchTerm }) {
                                         </span>
                                     </Dropdown.Trigger>
                                     <Dropdown.Content>
-                                        <Dropdown.Link href="">Todo Para Hombre</Dropdown.Link>
-                                        <Dropdown.Link href="">Camisetas Bordadas</Dropdown.Link>
-                                        <Dropdown.Link href="">Sublimado</Dropdown.Link>
-                                        <Dropdown.Link href="">Camisetas Manga Corta</Dropdown.Link>
-                                        <Dropdown.Link href="">Camisetas Manga Larga</Dropdown.Link>
-                                        <Dropdown.Link href="">Camisetas Manga 3/4</Dropdown.Link>
+                                        <Dropdown.Link href="/product/catalog?category=MASCULINO">Todo Para Hombre</Dropdown.Link>
+                                        <Dropdown.Link href="/product/catalog?category=MASCULINO&sleeve=CORTO">Camisetas Manga Corta</Dropdown.Link>
+                                        <Dropdown.Link href="/product/catalog?category=MASCULINO&sleeve=LARGO">Camisetas Manga Larga</Dropdown.Link>
+                                        <Dropdown.Link href="/product/catalog?category=MASCULINO&sleeve=3/4">Camisetas Manga 3/4</Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
                             </li>
@@ -126,12 +123,10 @@ export default function Catalog({ auth, user, products, searchTerm }) {
                                         </span>
                                     </Dropdown.Trigger>
                                     <Dropdown.Content>
-                                        <Dropdown.Link href="">Todo Para Mujer</Dropdown.Link>
-                                        <Dropdown.Link href="">Camisetas Bordadas</Dropdown.Link>
-                                        <Dropdown.Link href="">Sublimado</Dropdown.Link>
-                                        <Dropdown.Link href="">Camisetas Manga Corta</Dropdown.Link>
-                                        <Dropdown.Link href="">Camisetas Manga Larga</Dropdown.Link>
-                                        <Dropdown.Link href="">Camisetas Manga 3/4</Dropdown.Link>
+                                        <Dropdown.Link href="/product/catalog?category=FEMENINO">Todo Para Mujer</Dropdown.Link>
+                                        <Dropdown.Link href="/product/catalog?category=FEMENINO&sleeve=CORTO">Camisetas Manga Corta</Dropdown.Link>
+                                        <Dropdown.Link href="/product/catalog?category=FEMENINO&sleeve=LARGO">Camisetas Manga Larga</Dropdown.Link>
+                                        <Dropdown.Link href="/product/catalog?category=FEMENINO&sleeve=3/4">Camisetas Manga 3/4</Dropdown.Link>
                                     </Dropdown.Content>
                                 </Dropdown>
                             </li>
@@ -164,7 +159,7 @@ export default function Catalog({ auth, user, products, searchTerm }) {
                                 </Dropdown.Trigger>
                                 <Dropdown.Content>
                                     <Dropdown.Link href="">Más Populares</Dropdown.Link>
-                                    <Dropdown.Link href="">Nuevo</Dropdown.Link>
+                                    <Dropdown.Link href="/product/catalog?filter=newest">Nuevo</Dropdown.Link>
                                     <p class="ms-2"><b>Precio</b></p>
                                     <Dropdown.Link href="">Bajo-Alto</Dropdown.Link>
                                     <Dropdown.Link href="">Alto-Bajo</Dropdown.Link>
@@ -180,7 +175,7 @@ export default function Catalog({ auth, user, products, searchTerm }) {
                     <div className="flex flex-wrap -m-4">
                         {products.data.map(product => (
                             <div key={product.id} className="lg:w-1/4 md:w-1/2 p-4 w-full mb-6">
-                                <a className="block relative h-64 overflow-hidden bg-gray-100 hover:bg-gray-200">
+                                <Link href={route("product.personalize", product.id)} className="block relative h-64 overflow-hidden bg-gray-100 hover:bg-gray-200">
                                     {product.images.length > 0 ? (
                                         <img
                                             src={'/storage/'+product.images[0].image}
@@ -193,14 +188,8 @@ export default function Catalog({ auth, user, products, searchTerm }) {
                                             Sin imagen
                                         </div>
                                     )}
-                                </a>
+                                </Link>
                                 <div className="mt-4">
-                                    <Link
-                                        href={route("product.personalize", product.id)}
-                                        className="font-medium text-indigo-500 dark:text-indigo-500 hover:underline mx-1"
-                                    >
-                                        Más Información
-                                    </Link>
                                     <h2 className="text-gray-900 title-font text-lg font-medium">{product.name}</h2>
                                     <p className="mt-1">Bs. {product.price}</p>
                                 </div>

@@ -22,9 +22,7 @@ class DesignRequest extends FormRequest
     public function rules(): array
     {
         return [
-			'name' => 'string',
-			'image' => 'required',
-			'technique' => 'required',
+			
         ];
     }
 }

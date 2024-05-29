@@ -1,7 +1,6 @@
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import SelectInput from "@/Components/SelectInput";
-import TextAreaInput from "@/Components/TextAreaInput";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
@@ -9,13 +8,14 @@ import { Head, Link, useForm } from "@inertiajs/react";
 export default function Create({ auth }) {
   const { data, setData, post, errors } = useForm({
     name: "",
+    price: "",
     image: "",
     technique: "",
   });
 
   const onSubmit = (e) => {
     e.preventDefault();
-    post(route("design.store"));
+    post(route("design.store_admin"));
   };
 
   return (
@@ -25,14 +25,14 @@ export default function Create({ auth }) {
       <Head title="Nuevo Diseño" />
 
       <div className="py-12">
-        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 shadow-lg">
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <form onSubmit={onSubmit}
                 className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div>
                     <InputLabel 
                     htmlFor="design_name"
-                    value="Nombre"
+                    value="Nombre *"
                     />
                     <TextInput
                     id="design_name"
@@ -51,15 +51,34 @@ export default function Create({ auth }) {
 
                 <div className="mt-4">
                     <InputLabel 
+                    htmlFor="design_price"
+                    value="Precio *"
+                    />
+                    <TextInput
+                    id="design_price"
+                    type="text"
+                    name="price"
+                    value={data.price}
+                    className="mt-1 block w-full"
+                    isFocused={true}
+                    onChange={(e) => setData("price", e.target.value)}
+                    placeholder="Precio"
+                    />
+                    <InputError
+                    message={errors.price} className="mt-2"
+                    />
+                </div>
+
+                <div className="mt-4">
+                    <InputLabel 
                     htmlFor="design_image"
-                    value="Imagen"
+                    value="Imagen *"
                     />
                     <TextInput
                     id="design_image"
                     type="file"
                     name="image"
                     className="my-4 block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 file:bg-gray-50 file:border-0 file:me-4 file:py-3 file:px-4 dark:file:bg-neutral-700 dark:file:text-neutral-400"
-                    isFocused={true}
                     onChange={(e) => setData("image", e.target.files[0])}
                     />
                     <InputError
@@ -71,7 +90,7 @@ export default function Create({ auth }) {
                 <div className="mt-4">
                     <InputLabel 
                     htmlFor="product_technique"
-                    value="Técnica"
+                    value="Técnica *"
                     />
                     <SelectInput
                     name="technique"
@@ -90,7 +109,7 @@ export default function Create({ auth }) {
                 </div>
 
                 <div className="mt-4 text-right">
-                    <Link href={route("product.index")}
+                    <Link href={route("design.index")}
                     className="bg-gray-100 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
                     >
                         CANCELAR

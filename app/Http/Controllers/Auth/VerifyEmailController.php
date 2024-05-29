@@ -16,15 +16,12 @@ class VerifyEmailController extends Controller
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
-            $response = redirect()->intended(route('welcome', ['verified' => 1]));
+            return redirect()->intended(route('welcome', ['verified' => 1]));
         } else {
             if ($request->user()->markEmailAsVerified()) {
                 event(new Verified($request->user()));
             }
-            $response = Inertia::render('Welcome', [
-                'success' => 'Se verificó exitosamente el correo electrónico'
-            ]);
+            return redirect()->intended(route('welcome'))->with('success', 'Se verificó exitosamente el correo electrónico');
         }
-        return $response;
     }
 }
