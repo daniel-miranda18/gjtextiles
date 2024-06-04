@@ -71,12 +71,14 @@ class ProductResource extends Resource
                     ->multiple()
                     ->relationship('sizes', 'name')
                     ->reactive()
+                    ->preload()
                     ->required(),
                 Select::make('categories')
                     ->label('Categorias')
                     ->multiple()
                     ->relationship('categories', 'name')
                     ->reactive()
+                    ->preload()
                     ->required(),
                 Forms\Components\Toggle::make('published')
                     ->label('Publicar en catálogo')
