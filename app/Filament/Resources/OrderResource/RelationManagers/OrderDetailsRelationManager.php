@@ -39,7 +39,7 @@ class OrderDetailsRelationManager extends RelationManager
                 ->label('Talla'),
                 Tables\Columns\TextColumn::make('quantity')
                 ->label('Cantidad'),
-                Tables\Columns\TextColumn::make('design.image')
+                Tables\Columns\ImageColumn::make('design.image')
                 ->label('Diseño'),
             ])
             ->filters([

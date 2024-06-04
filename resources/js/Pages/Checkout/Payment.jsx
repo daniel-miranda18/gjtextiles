@@ -7,7 +7,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 export default function Checkout({ auth, cartItems, shippings, subTotalAmount }) {
     const [approvalUrl, setApprovalUrl] = useState('');
     const [selectedShipping, setSelectedShipping] = useState(shippings[0]);
-    const totalAmount = subTotalAmount + selectedShipping.price;
+    const totalAmount = subTotalAmount + (selectedShipping ? selectedShipping.price : 0);
 
     const handlePayPalPayment = async () => {
         try {
@@ -43,7 +43,7 @@ export default function Checkout({ auth, cartItems, shippings, subTotalAmount })
         <Head title="Detalles de Pago" />
 
         <div className="grid sm:px-10 lg:grid-cols-2 lg:px-34 xl:px-18">
-            <div class="px-4 py-8">
+            <div class="px-4 pb-28 pt-16">
                 <p class="text-xl font-medium text-gray-900 dark:text-white">Resumen de Pedido</p>
                 <p class="text-gray-400">Revisa tus artículos. Y seleccione un método de envío adecuado.</p>
                 <div class="mt-8 space-y-3 rounded-lg bg-white dark:bg-gray-800 px-2 sm:px-6">
@@ -83,7 +83,7 @@ export default function Checkout({ auth, cartItems, shippings, subTotalAmount })
                 </div>
 
                 <p class="mt-8 text-lg font-medium text-gray-900 dark:text-white">Métodos de Envío</p>
-                {shippings.map((shipping, index) => (
+                {shippings && shippings.length > 0 && shippings.map((shipping, index) => (
                     <div className="relative mt-5" key={shipping.id}>
                         <input 
                             onChange={() => handleShippingChange(shipping)}
@@ -91,14 +91,13 @@ export default function Checkout({ auth, cartItems, shippings, subTotalAmount })
                         <span className="peer-checked:border-indigo-500 absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-indigo-800"></span>
                         <label className="peer-checked:border-2 peer-checked:border-indigo-500 peer-checked:bg-gray-50 dark:peer-checked:bg-gray-700 flex cursor-pointer select-none rounded-lg border border-gray-300 p-4" htmlFor={`radio_${index}`}>
                             <div className="ml-5">
-                            <span className="mt-2 font-semibold text-gray-800 dark:text-white">{shipping.name}</span>
-                            <p className="text-slate-500 text-sm leading-6">{shipping.description}</p>
-                            <p className="text-slate-500 text-sm leading-6">Precio: Bs. {shipping.price.toFixed(2)}</p>
-                        </div>
-                    </label>
-                </div>
-            ))}
-
+                                <span className="mt-2 font-semibold text-gray-800 dark:text-white">{shipping.name}</span>
+                                <p className="text-slate-500 text-sm leading-6">{shipping.description}</p>
+                                <p className="text-slate-500 text-sm leading-6">Precio: Bs. {shipping.price.toFixed(2)}</p>
+                            </div>
+                        </label>
+                    </div>
+                ))}
         </div>
         <div class="px-4 py-4">
             <div class="mt-6 border-t border-b py-2">
@@ -108,7 +107,9 @@ export default function Checkout({ auth, cartItems, shippings, subTotalAmount })
                 </div>
                 <div class="flex items-center justify-between">
                 <p class="text-sm font-medium text-gray-900 dark:text-white">Envío</p>
-                <p class="font-semibold text-gray-900 dark:text-white">Bs. {selectedShipping.price.toFixed(2)}</p>
+                {selectedShipping && (
+                    <p className="font-semibold text-gray-900 dark:text-white">Bs. {selectedShipping.price.toFixed(2)}</p>
+                )}
                 </div>
             </div>
             <div class="mt-6 flex items-center justify-between">
