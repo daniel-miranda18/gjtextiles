@@ -3,17 +3,14 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import React, { useState, useEffect } from 'react';
 import Modal from '@/Components/Modal';
 import axios from 'axios';
-
-export default function Personalize({ auth, user, product, sizes, colors, design }) {
+export default function Personalize({ auth, user, product, sizes, images, design }) {
     const [showButtons, setshowButtons] = useState(false);
     const [showFileInput, setShowFileInput] = useState(false);
     const [confirmingDesign, setDesign] = useState(false);
-    const [selectedImage, setSelectedImage] = useState(product.image);
-    const [selectedColor, setSelectedColor] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(images.length > 0 ? images[0].image : null);
     const [newDesignImage, setNewDesignImage] = useState(null);
     const [responsePrice, setResponsePrice] = useState(null);
     const [selectedDesignId, setSelectedDesignId] = useState(null);
-
     const {data, setData, post} = useForm({
         product_id: product.id,
         color_id: "",
@@ -23,29 +20,23 @@ export default function Personalize({ auth, user, product, sizes, colors, design
         selectedSizes: [],
         selectedColors: [],
     });
-
     const onSubmit = (e) => {
         e.preventDefault();
         post(route("cart.store"));
     }
-
     const addOption = () => {
         setshowButtons(true);
     }
-
     const addDesign = () => {
         setDesign(true);
     };
-
     const closeModal = () => {
         setDesign(false);
         setShowFileInput(false);
     };
-    
     const toggleFileInput = () => {
         setShowFileInput(!showFileInput);
     };
-
     useEffect(() => {
         if (design && design.id) {
             setData(prevState => ({
@@ -54,20 +45,13 @@ export default function Personalize({ auth, user, product, sizes, colors, design
             }));
         }
     }, [design]);
-
     const handleSelectionChange = (type, value) => {
         setData(prevFormData => ({
             ...prevFormData,
             [type + "_id"]: value,
         }));
         if (type === "color") {
-            setSelectedColor(value);
-            const selectedColorObj = colors.find((color) => color.id === value);
-            if (selectedColorObj && selectedColorObj.images.length > 0) {
-                setSelectedImage(selectedColorObj.images[0].image);
-            } else {
-                setSelectedImage(null);
-            }
+            setSelectedImage(images.find(image => image.colors.some(color => color.id === value))?.image || null);
             if (value !== "" && data.size_id !== "") {
                 setData(prevFormData => ({
                     ...prevFormData,
@@ -86,7 +70,6 @@ export default function Personalize({ auth, user, product, sizes, colors, design
             }
         }
     };
-
     const handleQuantityChange = (e) => {
         const value = parseInt(e.target.value);
         setData(prevFormData => ({
@@ -94,7 +77,6 @@ export default function Personalize({ auth, user, product, sizes, colors, design
             quantity: value,
         }));
     };
-
     const decreaseQuantity = () => {
         if (data.quantity > 1) {
             setData({
@@ -103,23 +85,12 @@ export default function Personalize({ auth, user, product, sizes, colors, design
             });
         }
     };
-
     const increaseQuantity = () => {
         setData({
             ...data,
             quantity: data.quantity + 1,
         });
     };
-
-    useEffect(() => {
-        if (selectedColor === null) {
-            const firstColor = colors[0];
-            if (firstColor && firstColor.images.length > 0) {
-                setSelectedImage(firstColor.images[0].image);
-            }
-        }
-    }, [selectedColor, selectedImage]);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -130,18 +101,15 @@ export default function Personalize({ auth, user, product, sizes, colors, design
             const price = document.getElementById('price').value;
 
             const formData = new FormData();
-
             formData.append('name', 'Diseño');
             formData.append('price', price);
             formData.append('image', image);
             formData.append('technique', technique);
-    
             const response = await axios.post(route("design.store"), formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-
             setSelectedDesignId(response.data.id);
             setData(prevFormData => ({
                 ...prevFormData,
@@ -155,19 +123,16 @@ export default function Personalize({ auth, user, product, sizes, colors, design
             console.error(error);
         }
     };
-    
     return (
         <AuthenticatedLayout user={auth.user}>
             <Head title="Personalizar" />
-            <section className="relative mt-16">
-                <div className="w-full px-4 sm:px-6 my-6">
+            <section className="relative">
+                <div className="w-full px-4 sm:px-6 pb-10">
                     <div className="grid sm:grid-cols-2">
                         <div className="img flex items-left w-96 mx-auto mb-5">
-                            <div className="img-box bg-white-200 hover:bg-gray-100 w-96 h-96 mx-auto my-auto rounded-lg shadow-lg overflow-hidden relative">
+                            <div className="img-box bg-white-200 hover:bg-gray-100 dark:hover:bg-gray-700 w-96 h-96 mx-auto my-auto rounded-lg shadow-lg overflow-hidden relative">
                                 {selectedImage !== null ? (
-                                    <>
-                                        <img src={'/storage/' + selectedImage} alt={selectedImage} className="object-cover my-auto mx-auto h-full" />
-                                    </>
+                                    <img src={'/storage/' + selectedImage} alt={selectedImage} className="object-cover my-auto mx-auto h-full" />
                                 ) : (
                                     <div className="bg-red-500 py-2 px-4 text-white text-center rounded-lg mt-16">
                                         <p>NO DISPONIBLE EN ESTE MOMENTO.</p>
@@ -177,7 +142,7 @@ export default function Personalize({ auth, user, product, sizes, colors, design
                         </div>
                         <div className="data w-full xl:justify-start justify-center flex items-center xl:my-2 lg:my-2">
                             <div className="data w-full max-w-xl">
-                                <h2 className="font-bold text-xl text-gray-900 mb-2 uppercase">
+                                <h2 className="font-bold text-xl text-gray-900 my-4 uppercase dark:text-gray-100">
                                     {product.name}
                                 </h2>
                                 <form onSubmit={onSubmit}>
@@ -185,18 +150,14 @@ export default function Personalize({ auth, user, product, sizes, colors, design
                                         type="hidden"
                                         name="product_id"
                                         value={product.id}
+                                        required
                                     />
                                     <input
                                         type="hidden"
                                         name="size_id"
                                         value={data.size_id || ''}
                                         onChange={(e) => setData("product_id", e.target.value)}
-                                    />
-                                    <input
-                                        type="hidden"
-                                        name="color_id"
-                                        value={data.color_id || ''}
-                                        onChange={(e) => setData("product_id", e.target.value)}
+                                        required
                                     />
                                     <input
                                         type="hidden"
@@ -205,7 +166,58 @@ export default function Personalize({ auth, user, product, sizes, colors, design
                                         onChange={(e) => setData("design_id", e.target.value)}
                                     />
 
-                                    <p className="text-gray-900 text-md font-medium"><b>Talla</b></p>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-2">
+                                        {newDesignImage || design ? (
+                                            <>
+                                                <p className="text-gray-900 dark:text-white text-md font-medium"><b>Diseño</b></p>
+                                                &nbsp;
+                                                <div className="w-100 pb-2 border-b border-gray-100 flex-wrap">
+                                                    {newDesignImage && (
+                                                        <img src={'/storage/' + newDesignImage} alt="Nuevo diseño" width={100} />
+                                                    )}
+                                                    {design && (
+                                                        <img src={'/storage/' + design.image} alt="Diseño existente" width={100} />
+                                                    )}
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <>
+                                            {showButtons ? (
+                                                <>
+                                                    <div className="flex sm:items-center sm:justify-center w-full">
+                                                        <button
+                                                            onClick={addDesign}
+                                                            type="button"
+                                                            className="w-full rounded-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-4 border-b-4 border-emerald-700 hover:border-emerald-500 me-2"
+                                                        >
+                                                            NUEVO DISEÑO
+                                                        </button>
+                                                    </div>
+                                                    <div className="flex sm:items-center sm:justify-center w-full">
+                                                        <Link
+                                                            href={route("design.list", { id: product.id })}
+                                                            className="w-full rounded-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-4 border-b-4 border-emerald-700 hover:border-emerald-500 me-2 text-center"
+                                                        >
+                                                            VER DISEÑOS
+                                                        </Link>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div className="flex sm:items-center sm:justify-center w-full">
+                                                    <button
+                                                        onClick={addOption}
+                                                        type="button"
+                                                        className="w-full rounded-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-4 border-b-4 border-emerald-700 hover:border-emerald-500 me-2"
+                                                    >
+                                                        AÑADIR DISEÑO
+                                                    </button>
+                                                    <h1 className="dark:text-white">(Opcional)</h1>
+                                                </div>
+                                            )}
+                                            </>
+                                        )}
+                                    </div>
+                                    <p className="text-gray-900 text-md font-medium dark:text-white"><b>Talla</b></p>
                                     <div className="w-100 pb-2 border-b border-gray-100 flex-wrap">
                                         <div className="grid grid-cols-3 min-[300px]:grid-cols-5 gap-3">
                                             {sizes.map(size => (
@@ -217,111 +229,61 @@ export default function Personalize({ auth, user, product, sizes, colors, design
                                                         className="sr-only"
                                                         onChange={() => handleSelectionChange("size", size.id)}
                                                     />
-                                                    <span className={`bg-indigo text-center py-1.5 px-6 w-full font-semibold text-sm leading-8 text-gray-900 border border-gray-200 flex items-center rounded-full justify-center transition-all duration-300 visited:border-gray-300 visited:bg-gray-50 ${data.size_id === size.id ? "bg-indigo-600 text-white" : ""}`}>{size.name}</span>
+                                                    <span className={`bg-indigo dark:text-white text-center py-1.5 px-6 w-full font-semibold text-sm leading-8 text-gray-900 border border-gray-200 flex items-center rounded-full justify-center transition-all duration-300 visited:border-gray-300 visited:bg-gray-50 ${data.size_id === size.id ? "bg-indigo-600 text-white" : ""}`}>{size.name}</span>
                                                 </label>
                                             ))}
                                         </div>
                                     </div>
-                                    <p className="text-gray-900 text-md font-medium"><b>Color</b></p>
+                                    <p className="text-gray-900 text-md font-medium dark:text-white"><b>Color</b></p>
                                     <div className="w-100 pb-2 border-b border-gray-100 flex-wrap">
-                                        <div className="grid grid-cols-4 gap-3">
-                                            {colors.map(color => (
-                                                <label key={color.id} className="inline-flex items-center">
-                                                    <input
-                                                        type="radio"
-                                                        name="color"
-                                                        value={color.id}
-                                                        className="sr-only"
-                                                        onChange={() => handleSelectionChange("color", color.id)}
-                                                    />
-                                                    <span className={`bg-${color.name.toLowerCase()} text-center py-1.5 px-6 w-full font-semibold text-sm leading-8 text-gray-900 border border-gray-200 flex items-center rounded-full justify-center transition-all duration-300 visited:border-gray-300 visited:bg-gray-50 ${data.color_id === color.id ? "bg-indigo-600 text-white" : ""}`}>{color.name}</span>
-                                                </label>
-                                            ))}
+                                        <div className="grid grid-cols-3 min-[300px]:grid-cols-5 gap-3">
+                                        {images.map(image => (
+                                            <div key={image.id} className="mb-4">
+                                                {image.colors.map(color => (
+                                                    <label key={color.id}>
+                                                        <input
+                                                            type="radio"
+                                                            name="color" 
+                                                            value={color.id}
+                                                            className="sr-only"
+                                                            onChange={() => handleSelectionChange("color", color.id)}
+                                                        />
+                                                        <span className={`bg-${color.name.toLowerCase()} dark:text-white text-center py-1.5 px-6 w-full font-semibold text-sm leading-8 text-gray-900 border border-gray-200 flex items-center rounded-full justify-center transition-all duration-300 visited:border-gray-300 visited:bg-gray-50 ${data.color_id === color.id ? "bg-indigo-600 text-white" : ""}`}>{color.name}</span>
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        ))}
                                         </div>
                                     </div>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-2">
 
-                                    {newDesignImage || design ? (
-                                        <>
-                                            <p className="text-gray-900 text-md font-medium"><b>Diseño</b></p>
-                                            &nbsp;
-                                            <div className="w-100 pb-2 border-b border-gray-100 flex-wrap">
-                                                {newDesignImage && (
-                                                    <img src={'/storage/' + newDesignImage} alt="Nuevo diseño" width={60} />
-                                                )}
-                                                {design && (
-                                                    <img src={'/storage/' + design.image} alt="Diseño existente" width={60} />
-                                                )}
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <>
-                                        {showButtons ? (
-                                            <>
-                                                <div className="flex sm:items-center sm:justify-center w-full">
-                                                    <button
-                                                        onClick={addDesign}
-                                                        type="button"
-                                                        className="w-full rounded-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-4 border-b-4 border-emerald-700 hover:border-emerald-500 me-2"
-                                                    >
-                                                        NUEVO DISEÑO
-                                                    </button>
-                                                </div>
-                                                <div className="flex sm:items-center sm:justify-center w-full">
-                                                    <Link
-                                                        href={route("design.list", { id: product.id })}
-                                                        className="w-full rounded-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-4 border-b-4 border-emerald-700 hover:border-emerald-500 me-2 text-center"
-                                                    >
-                                                        VER DISEÑOS
-                                                    </Link>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <div className="flex sm:items-center sm:justify-center w-full">
-                                                <button
-                                                    onClick={addOption}
-                                                    type="button"
-                                                    className="w-full rounded-full bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-4 border-b-4 border-emerald-700 hover:border-emerald-500 me-2"
-                                                >
-                                                    AÑADIR DISEÑO
-                                                </button>
-                                                (Opcional)
-                                            </div>
-                                        )}
-                                        </>
-                                    )}
-
-                                    </div>
                                     <div className="my-4">
-                                        <p className="text-gray-900 text-md font-medium"><b>Detalles</b></p>
+                                        <p className="text-gray-900 text-md font-medium dark:text-white"><b>Detalles</b></p>
                                         <div className="w-full pb-2 border-b border-gray-100 flex-wrap">
-                                            <h6>Precio Unitario: Bs. {product.price}</h6>
-                                            {responsePrice || design && (
+                                            <h6 className="text-gray-900 dark:text-white">Precio Unitario: Bs. {product.price}</h6>
+                                            {design && (
                                                 <>
-                                                    {responsePrice && (
-                                                        <>
-                                                            <p>Precio Extra: Bs. {responsePrice}</p>
-                                                            <h6>Precio Total: <b>Bs. {product.price * data.quantity + parseFloat(responsePrice)}</b></h6>
-                                                        </>
-                                                    )}
-                                                    {design && (
-                                                        <>
-                                                            <p>Precio Extra: Bs. {design.price}</p>
-                                                            <h6>Precio Total: <b>Bs. {product.price * data.quantity + parseFloat(design.price)}</b></h6>
-                                                        </>
-                                                    )}
+                                                    <p className="text-gray-900 dark:text-white">Precio Extra: Bs. {design.price}</p>
+                                                    <h6 className="text-gray-900 dark:text-white">Precio Total: <b>Bs. {(product.price + parseFloat(design.price)) * data.quantity}</b></h6>
                                                 </>
                                             )}
-                                            {!responsePrice || !design && (
-                                                <h6>Precio Total: <b>Bs. {product.price * data.quantity}</b></h6>
+                                            {responsePrice && (
+                                                <>
+                                                    <p className="text-gray-900 dark:text-white">Precio Extra: Bs. {responsePrice}</p>
+                                                    <h6 className="text-gray-900 dark:text-white">Precio Total: <b>Bs. {(product.price + parseFloat(responsePrice)) * data.quantity}</b></h6>
+                                                </>
+                                            )}
+                                            {!responsePrice && !design && (
+                                                <>
+                                                    <h6 className="text-gray-900 dark:text-white">Precio Total: <b>Bs. {product.price * data.quantity}</b></h6>
+                                                </>
                                             )}
                                         </div>
                                     </div>
-                                    <p className="text-gray-900 text-md font-medium"><b>Cantidad</b></p>
+                                    <p className="text-gray-900 text-md font-medium dark:text-white"><b>Cantidad</b></p>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-2">
                                         <div className="flex sm:items-center sm:justify-center w-full">
-                                            <button type="button" onClick={decreaseQuantity} className="group py-4 px-6 border border-gray-400 rounded-l-full bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-sm hover:shadow-gray-300">
-                                                <svg className="stroke-gray-900 group-hover:stroke-black" width="16" height="10" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <button type="button" onClick={decreaseQuantity} className="group py-4 px-6 border border-gray-400 rounded-l-full bg-white dark:bg-gray-800 transition-all duration-300 hover:bg-gray-50 hover:dark:bg-gray-700 hover:shadow-sm hover:shadow-gray-300">
+                                                <svg className="stroke-gray-900 dark:stroke-gray-50 group-hover:stroke-black" width="16" height="10" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M16.5 11H5.5" stroke="" strokeWidth="1.6" strokeLinecap="round" />
                                                     <path d="M16.5 11H5.5" strokeOpacity="0.2" strokeWidth="1.6" strokeLinecap="round" />
                                                     <path d="M16.5 11H5.5" strokeOpacity="0.2" strokeWidth="1.6" strokeLinecap="round" />
@@ -332,10 +294,10 @@ export default function Personalize({ auth, user, product, sizes, colors, design
                                                 value={data.quantity}
                                                 readOnly
                                                 onChange={handleQuantityChange}
-                                                className="font-semibold text-gray-900 cursor-pointer text-lg py-[7px] px-6 w-full sm:max-w-[118px] outline-0 border-y border-gray-400 bg-transparent placeholder:text-gray-900 text-center hover:bg-gray-50"
+                                                className="font-semibold text-gray-900 dark:text-gray-50 bg-white dark:bg-gray-800 cursor-pointer text-lg py-[7px] px-6 w-full sm:max-w-[118px] outline-0 border-y border-gray-40 placeholder:text-gray-900 text-center hover:bg-gray-50 dark:hover:bg-gray-700"
                                             />
-                                            <button type="button" onClick={increaseQuantity} className="group py-4 px-6 border border-gray-400 rounded-r-full bg-white transition-all duration-300 hover:bg-gray-50 hover:shadow-sm hover:shadow-gray-300">
-                                                <svg className="stroke-gray-900 group-hover:stroke-black" width="16" height="10" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <button type="button" onClick={increaseQuantity} className="group py-4 px-6 border border-gray-400 rounded-r-full bg-white dark:bg-gray-800 transition-all duration-300 hover:bg-gray-50 hover:dark:bg-gray-700 hover:shadow-sm hover:shadow-gray-300">
+                                                <svg className="stroke-gray-900 dark:stroke-gray-50 group-hover:stroke-black" width="16" height="10" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M11 5.5V16.5M16.5 11H5.5" stroke="#9CA3AF" strokeWidth="1.6" strokeLinecap="round" />
                                                     <path d="M11 5.5V16.5M16.5 11H5.5" stroke="black" strokeOpacity="0.2" strokeWidth="1.6" strokeLinecap="round" />
                                                     <path d="M11 5.5V16.5M16.5 11H5.5" stroke="black" strokeOpacity="0.2" strokeWidth="1.6" strokeLinecap="round" />
@@ -358,7 +320,9 @@ export default function Personalize({ auth, user, product, sizes, colors, design
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <button className="text-center w-full px-5 py-3 rounded-[100px] bg-indigo-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-indigo-700 hover:shadow-indigo-400">
+                                        <button 
+                                        className="text-center w-full px-5 py-3 rounded-[100px] bg-indigo-600 flex items-center justify-center font-semibold text-lg text-white shadow-sm transition-all duration-500 hover:bg-indigo-700 hover:shadow-indigo-400"
+                                        disabled={!data.color_id || !data.size_id}>
                                             Comprar Ahora
                                         </button>
                                     </div>
@@ -402,7 +366,7 @@ export default function Personalize({ auth, user, product, sizes, colors, design
                                             )}
                                             {showFileInput && (
                                                 <label for="image" class="flex flex-col items-center justify-center w-72 h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 my-2">
-                                                    <input id="image" type="file" name="image" class="hidden" onChange={(e) => {
+                                                    <input id="image" type="file" name="image" class="hidden" required onChange={(e) => {
                                                         const previewImage = document.getElementById('preview-image');
                                                         const placeholderContainer = document.querySelector('.placeholder-container');
                                                         if (e.target.files && e.target.files[0]) {
@@ -426,6 +390,7 @@ export default function Personalize({ auth, user, product, sizes, colors, design
                                                     <select
                                                         id="technique"
                                                         name="technique"
+                                                        required
                                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-56 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-emerald-500 dark:focus:border-emerald-500 mt-2"
                                                         onChange={(e) => {
                                                             const selectedTechnique = e.target.value;

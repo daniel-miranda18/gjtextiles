@@ -35,7 +35,7 @@ class Product extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'description', 'sleeve', 'price', 'stock'];
+    protected $fillable = ['name', 'description', 'sleeve', 'price', 'stock', 'published'];
 
 
     public function colors(): BelongsToMany

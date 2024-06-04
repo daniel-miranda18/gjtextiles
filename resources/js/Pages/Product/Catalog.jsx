@@ -2,8 +2,9 @@ import { Head, Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import React, { useState } from 'react';
 import Dropdown from '@/Components/Dropdown';
+import { Pagination } from '@/Components/Pagination';
 
-export default function Catalog({ auth, user, products, searchTerm }) {
+export default function Catalog({ auth, products, searchTerm }) {
     const [search, setSearch] = useState('');
     
     const handleSubmit = (e) => {
@@ -25,7 +26,7 @@ export default function Catalog({ auth, user, products, searchTerm }) {
             <Head title="Catálogo" />
             
             {searchTerm && (
-                <div className="flex justify-end pr-10 mt-4">
+                <div className="flex justify-end pr-10 pt-4">
                     <button
                         onClick={handleClearSearch} 
                         className="block text-gray-100 bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-gray-400 dark:hover:bg-gray-500 dark:focus:ring-blue-800"
@@ -35,7 +36,7 @@ export default function Catalog({ auth, user, products, searchTerm }) {
                 </div>
             )}
 
-            <form className="max-w-md mx-auto mt-4" onSubmit={handleSubmit}>   
+            <form className="max-w-md mx-auto py-4" onSubmit={handleSubmit}>   
                 <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Buscar</label>
                 <div className="relative">
                     <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -160,7 +161,7 @@ export default function Catalog({ auth, user, products, searchTerm }) {
                                 <Dropdown.Content>
                                     <Dropdown.Link href="">Más Populares</Dropdown.Link>
                                     <Dropdown.Link href="/product/catalog?filter=newest">Nuevo</Dropdown.Link>
-                                    <p class="ms-2"><b>Precio</b></p>
+                                    <p class="ms-2 text-black dark:text-white"><b>Precio</b></p>
                                     <Dropdown.Link href="">Bajo-Alto</Dropdown.Link>
                                     <Dropdown.Link href="">Alto-Bajo</Dropdown.Link>
                                 </Dropdown.Content>
@@ -170,12 +171,12 @@ export default function Catalog({ auth, user, products, searchTerm }) {
                 </div>
             </nav>
 
-            <section className="text-gray-600 body-font">
+            <section className="text-gray-600 body-font pb-48">
                 <div className="container px-5 py-10 mx-auto">
                     <div className="flex flex-wrap -m-4">
                         {products.data.map(product => (
                             <div key={product.id} className="lg:w-1/4 md:w-1/2 p-4 w-full mb-6">
-                                <Link href={route("product.personalize", product.id)} className="block relative h-64 overflow-hidden bg-gray-100 hover:bg-gray-200">
+                                <Link href={route("product.personalize", product.id)} className="block relative h-64 overflow-hidden bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600">
                                     {product.images.length > 0 ? (
                                         <img
                                             src={'/storage/'+product.images[0].image}
@@ -184,18 +185,19 @@ export default function Catalog({ auth, user, products, searchTerm }) {
                                             style={{ maxWidth: "100%", maxHeight: "100%" }}
                                         />
                                     ) : (
-                                        <div className="flex justify-center items-center w-full h-full bg-gray-300 text-gray-600">
+                                        <div className="flex justify-center items-center w-full h-full bg-gray-300 dark:bg-gray-700 text-gray-600">
                                             Sin imagen
                                         </div>
                                     )}
                                 </Link>
                                 <div className="mt-4">
-                                    <h2 className="text-gray-900 title-font text-lg font-medium">{product.name}</h2>
-                                    <p className="mt-1">Bs. {product.price}</p>
+                                    <h2 className="text-gray-900 dark:text-white title-font text-lg font-medium">{product.name}</h2>
+                                    <p className="mt-1 dark:text-white">Bs. {product.price}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
+                    <Pagination links={products.meta.links}/>
                     {products.data.length === 0 && (
                          <div id="alert-border-4" className="flex items-center mx-16 p-4 text-red-800 border-t-4 border-red-300 bg-red-50 dark:text-red-300 dark:bg-gray-800 dark:border-yellow-800" role="alert">
                             <svg className="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">

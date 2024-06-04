@@ -54,6 +54,8 @@ class ProductController extends Controller
         $sleeveType = $request->input('sleeve');
         $filter = $request->input('filter');
 
+        $query->where('published', 1);
+
         if ($searchTerm) {
             $query->where(function ($query) use ($searchTerm) {
                 $query->where('name', 'like', '%' . $searchTerm . '%')
@@ -81,7 +83,7 @@ class ProductController extends Controller
             $query->where('created_at', '>=', $oneWeekAgo);
         }
 
-        $products = $query->with('colors', 'images')->paginate(15)->onEachSide(1);
+        $products = $query->with('colors', 'images')->paginate(10);
 
         return inertia("Product/Catalog", [
             "products" => ProductResource::collection($products),
@@ -94,13 +96,14 @@ class ProductController extends Controller
         $designDetails = $request->query('design_details');
         $design = json_decode(urldecode($designDetails));
 
-        $product = Product::with('sizes', 'colors.images')->findOrFail($id);
+        $product = Product::with('sizes', 'images.colors')->findOrFail($id);
+
         $sizes = $product->sizes;
-        $colors = $product->colors;
+        $images = $product->images;
         return inertia("Product/Personalize", [
             "product" => $product,
             "sizes" => $sizes,
-            "colors" => $colors,
+            "images" => $images,
             "design" => $design,
         ]);
     }

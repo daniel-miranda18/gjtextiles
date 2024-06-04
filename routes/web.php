@@ -6,10 +6,10 @@ use App\Http\Controllers\DesignController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ColorsProductController;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\CartItemController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CheckoutController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -28,6 +28,7 @@ Route::get('/product/personalize/{id}', [ProductController::class, 'personalize'
 Route::resource('cart', CartController::class);
 Route::resource('cart_item', CartItemController::class);
 Route::get('/designs/list/{id}', [DesignController::class, 'list'])->name('design.list');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
     Route::resource('product', ProductController::class);
@@ -36,6 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('color', ColorController::class);
     Route::resource('size', SizeController::class);
     Route::resource('category', CategoryController::class);
+    Route::resource('order', OrderController::class);
 });
 
 Route::middleware('auth')->group(function () {
@@ -45,20 +47,14 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    //Route::get('/paypal/create', [PayPalController::class, 'createTransaction'])->name('paypal.create');
-    //Route::post('/paypal/process', [PayPalController::class, 'processTransaction'])->name('paypal.process');
-    //Route::get('/paypal/success', [PayPalController::class, 'successTransaction'])->name('paypal.success');
-    //Route::get('/paypal/cancel', [PayPalController::class, 'cancelTransaction'])->name('paypal.cancel');
-    //Route::get('/paypal/error', [PayPalController::class, 'errorTransaction'])->name('paypal.error');
- 
-    Route::get('paypal/payment', [PayPalController::class, 'createTransaction'])->name('paypal.payment');
-    Route::post('paypal/process', [PayPalController::class, 'processTransaction'])->name('paypal.processTransaction');
-    Route::get('paypal/success', [PayPalController::class, 'successTransaction'])->name('paypal.successTransaction');
-    Route::get('paypal/cancel', [PayPalController::class, 'cancelTransaction'])->name('paypal.cancelTransaction');
-    Route::get('paypal/error', [PayPalController::class, 'errorTransaction'])->name('paypal.errorTransaction');
- 
-    Route::get('paypal/success/view', [PayPalController::class, 'successView'])->name('paypal.success');
-    Route::get('paypal/cancel/view', [PayPalController::class, 'cancelView'])->name('paypal.cancel');
+    Route::get('checkout/payment', [CheckoutController::class, 'createTransaction'])->name('checkout.payment');
+
+    Route::post('paypal/process', [CheckoutController::class, 'processPaypalTransaction'])->name('paypal.processTransaction');
+    Route::get('paypal/cancel', [CheckoutController::class, 'cancelPaypalTransaction'])->name('paypal_cancel');
+    Route::get('paypal/success', [CheckoutController::class, 'successPaypalTransaction'])->name('paypal_success');
+
+    Route::get('checkout/error', [CheckoutController::class, 'error'])->name('checkout.error');
+    Route::get('checkout/success', [CheckoutController::class, 'success'])->name('checkout.success');
 });
 
 require __DIR__.'/auth.php';

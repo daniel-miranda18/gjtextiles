@@ -185,6 +185,10 @@ class DesignController extends Controller
             $designsQuery->where('technique', $technique);
         }
 
+        $designsQuery->whereHas('createdBy', function ($query) {
+            $query->where('role', 'ADMIN');
+        });
+
         $designs = $designsQuery->get();
 
         return inertia('Design/List', [

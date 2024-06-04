@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 /**
  * Class ImagesProduct
  *
@@ -31,7 +30,6 @@ class ImagesProduct extends Model
      */
     protected $fillable = ['product_id', 'color_id', 'image'];
 
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -46,5 +44,13 @@ class ImagesProduct extends Model
     public function product()
     {
         return $this->belongsTo(\App\Models\Product::class, 'product_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function colors()
+    {
+        return $this->belongsToMany(Color::class, 'images_products', 'id', 'color_id');
     }
 }

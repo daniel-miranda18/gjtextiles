@@ -31,9 +31,9 @@ export default function List({ auth, designs, product }) {
       <Head title="Detalles de Publicación" />
       <div className="py-2">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+          <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg pb-96">
             <div className="p-2 text-gray-900 dark:text-gray-100">
-              <h1 className="lg:text-5xl font-bold leading-tight text-3xl text-black text-center">Selecciona diseño para {product.name} </h1><br />
+              <h1 className="lg:text-5xl font-bold leading-tight text-3xl text-black dark:text-white text-center">Selecciona diseño para {product.name} </h1><br />
               <div className="flex items-center justify-center py-4 md:py-5 flex-wrap">
               <Link href={`/designs/list/${product.id}`} className="text-indigo-700 hover:text-white border border-indigo-600 bg-white hover:bg-indigo-700 focus:ring-4 focus:outline-none focus:ring-indigo-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:border-indigo-500 dark:text-indigo-500 dark:hover:text-white dark:hover:bg-indigo-500 dark:bg-gray-900 dark:focus:ring-indigo-800">
                 Todos los diseños

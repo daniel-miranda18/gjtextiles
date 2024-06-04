@@ -17,7 +17,7 @@ export default function Authenticated({ user, header, children }) {
                                 <NavLink href={route('welcome')} active={route().current('welcome')} iconClass="fas fa-home">
                                     Inicio
                                 </NavLink>
-                                <NavLink href={route('product.catalog')} active={route().current('product.catalog')} iconClass="fas fa-book">
+                                <NavLink href={route('product.catalog')} active={route().current('product.catalog')} iconClass="fas fa-tshirt">
                                     Catálogo
                                 </NavLink>
                                 <NavLink href={route('cart.index')} active={route().current('cart.index')} iconClass="fas fa-shopping-cart">
@@ -25,9 +25,12 @@ export default function Authenticated({ user, header, children }) {
                                 </NavLink>
                                 {isLoggedIn ? (
                                     <>
+                                        <NavLink href={route('order.index')} active={route().current('order.index')} iconClass="fas fa-shopping-bag">
+                                            Compras
+                                        </NavLink>
                                         {user.role === 'ADMIN' ? (
                                             <>
-                                                <NavLink href={route('dashboard')} active={route().current('dashboard')} iconClass="fas fa-tachometer-alt">
+                                                {/*<NavLink href={route('dashboard')} active={route().current('dashboard')} iconClass="fas fa-tachometer-alt">
                                                     Panel
                                                 </NavLink>
                                                 <NavLink href={route('product.index')} active={route().current('product.index')} iconClass="fas fa-tshirt">
@@ -35,7 +38,7 @@ export default function Authenticated({ user, header, children }) {
                                                 </NavLink>
                                                 <NavLink href={route('design.index')} active={route().current('design.index')} iconClass="fas fa-paint-brush">
                                                     Diseños
-                                                </NavLink>
+                                                </NavLink>*/}
                                             </>
                                         ) : (
                                             null
@@ -82,8 +85,11 @@ export default function Authenticated({ user, header, children }) {
                                             </span>
                                         </Dropdown.Trigger>
                                         <Dropdown.Content>
-                                            <Dropdown.Link href={route('profile.edit')}>Mi Perfil</Dropdown.Link>
-                                            <Dropdown.Link>Mi Carrito</Dropdown.Link>
+                                            <Dropdown.Link href={route('welcome')}>Inicio</Dropdown.Link>
+                                            <Dropdown.Link href={route('profile.edit')}>Perfil</Dropdown.Link>
+                                            <Dropdown.Link href={route('product.catalog')}>Catálogo</Dropdown.Link>
+                                            <Dropdown.Link href={route('cart.index')}>Carrito de Compras</Dropdown.Link>
+                                            <Dropdown.Link href={route('order.index')}>Compras</Dropdown.Link>
                                             <Dropdown.Link href={route('logout')} method="post" as="button">
                                                 Cerrar Sesión
                                             </Dropdown.Link>
@@ -129,21 +135,18 @@ export default function Authenticated({ user, header, children }) {
                     <div className="pt-2 pb-3 space-y-1">
                         {isLoggedIn ? (
                             <>
-                            {user.role === 'ADMIN' ? (
-                                    <>
-                                        <ResponsiveNavLink href={route('dashboard')}>
-                                            Panel
-                                        </ResponsiveNavLink>
-                                        <ResponsiveNavLink href={route('product.index')}>
-                                            Productos
-                                        </ResponsiveNavLink>
-                                    </>
-                                ) : (
-                                    null
-                                )}
+                                <ResponsiveNavLink href={route('order.index')}>
+                                    Compras
+                                </ResponsiveNavLink>
                             </>
                         ) : (
                             <>
+                                <ResponsiveNavLink href={route('login')}>
+                                Iniciar Sesión
+                                </ResponsiveNavLink>
+                                <ResponsiveNavLink href={route('register')}>
+                                    Registrate
+                                </ResponsiveNavLink>
                                 <ResponsiveNavLink href={route('welcome')}>
                                     Inicio
                                 </ResponsiveNavLink>
@@ -170,7 +173,19 @@ export default function Authenticated({ user, header, children }) {
                         <div className="mt-3 space-y-1">
                             {isLoggedIn && (
                                 <>
-                                    <ResponsiveNavLink href={route('profile.edit')}>Mi Perfil</ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('welcome')}>
+                                        Inicio
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('profile.edit')}>Perfil</ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('product.catalog')}>
+                                        Catálogo
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('cart.index')}>
+                                        Carrito de Compras
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink href={route('order.index')}>
+                                        Compras
+                                    </ResponsiveNavLink>
                                     <ResponsiveNavLink method="post" href={route('logout')} as="button">
                                         Cerrar Sesión
                                     </ResponsiveNavLink>
@@ -186,8 +201,9 @@ export default function Authenticated({ user, header, children }) {
                     <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
                 </header>
             )}
-
-            <main>{children}</main>
+            <main className="bg-white dark:bg-gray-800">
+                {children}
+            </main>
         </div>
     );
 }

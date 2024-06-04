@@ -18,7 +18,7 @@ class CartController extends Controller
         $user = auth()->user();
         if ($user && $user->cart) {
             $cart = $user->cart;
-            $cartItems = $cart->cartItems()->with('product.colors.images')->get();
+            $cartItems = $cart->cartItems()->with(['product.images', 'design'])->get();
             return inertia('Cart/Index', [
                 'cartItems' => $cartItems,
                 'success' => session('success'),

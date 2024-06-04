@@ -6,10 +6,10 @@ export default function Alert({ type = 'info', children, className = '', ...prop
     
     const baseClasses = 'flex items-center p-4 border-t-4 rounded-md font-semibold text-sm';
     const typeClasses = {
-        success: 'bg-green-100 text-green-800 border-green-200',
-        error: 'bg-red-100 text-red-800 border-red-200',
-        warning: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-        info: 'bg-blue-100 text-blue-800 border-blue-200',
+        success: 'bg-green-100 dark:bg-gray-700 text-green-800 dark:text-green-700 border-green-200 dark:border-green-700',
+        error: 'bg-red-100 dark:bg-gray-700 text-red-800 dark:text-red-700 border-red-200 dark:border-red-700',
+        warning: 'bg-yellow-100 dark:bg-gray-700 text-yellow-800 dark:text-yellow-700 border-yellow-200 dark:border-yellow-700',
+        info: 'bg-blue-100 dark:bg-gray-700 text-blue-800 dark:text-blue-700 border-blue-200 dark:border-blue-700',
     };
 
     const iconClasses = 'flex-shrink-0 w-4 h-4 mr-3';

@@ -48,7 +48,7 @@ export default function Welcome({ auth, success }) {
             </section>
 
 
-        <section class="text-gray-600 body-font">
+        <section class="text-gray-600 dark:text-white body-font">
             <div class="container px-5 py-24 mx-auto flex flex-wrap flex-col text-center">
                 <h1 class="title-font sm:text-4xl text-3xl mb-4 font-medium text-center">Como personalizar los productos</h1>
                 <div class="flex flex-wrap w-full">
@@ -63,7 +63,7 @@ export default function Welcome({ auth, success }) {
                             </svg>
                         </div>
                         <div class="flex-grow pl-4">
-                            <h2 class="font-medium title-font text-sm text-gray-900 mb-1 tracking-wider">PASO 1</h2>
+                            <h2 class="font-medium title-font text-sm text-gray-900 dark:text-white mb-1 tracking-wider">PASO 1</h2>
                             <p class="leading-relaxed">Selecciona un producto de tu agrado en el catálogo de productos.</p>
                         </div>
                     </div>
@@ -77,7 +77,7 @@ export default function Welcome({ auth, success }) {
                             </svg>
                         </div>
                         <div class="flex-grow pl-4">
-                            <h2 class="font-medium title-font text-sm text-gray-900 mb-1 tracking-wider">PASO 2</h2>
+                            <h2 class="font-medium title-font text-sm text-gray-900 dark:text-white mb-1 tracking-wider">PASO 2</h2>
                             <p class="leading-relaxed">Elige tus colores preferidos y también la talla.</p>
                         </div>
                     </div>
@@ -91,7 +91,7 @@ export default function Welcome({ auth, success }) {
                             </svg>
                         </div>
                         <div class="flex-grow pl-4">
-                            <h2 class="font-medium title-font text-sm text-gray-900 mb-1 tracking-wider">PASO 3 (opcional)</h2>
+                            <h2 class="font-medium title-font text-sm text-gray-900 dark:text-white mb-1 tracking-wider">PASO 3 (opcional)</h2>
                             <p class="leading-relaxed">Puedes elegir un diseño, ya sea uno existente o crear y subir tu propio diseño.</p>
                         </div>
                     </div>
@@ -105,7 +105,7 @@ export default function Welcome({ auth, success }) {
                             </svg>
                         </div>
                         <div class="flex-grow pl-4">
-                            <h2 class="font-medium title-font text-sm text-gray-900 mb-1 tracking-wider">PASO 4</h2>
+                            <h2 class="font-medium title-font text-sm text-gray-900 dark:text-white mb-1 tracking-wider">PASO 4</h2>
                             <p class="leading-relaxed">Añade cuantos productos quieras a tu carrito de compras.</p>
                         </div>
                     </div>
@@ -117,7 +117,7 @@ export default function Welcome({ auth, success }) {
                             </svg>
                         </div>
                         <div class="flex-grow pl-4">
-                            <h2 class="font-medium title-font text-sm text-gray-900 mb-1 tracking-wider">FINALMENTE</h2>
+                            <h2 class="font-medium title-font text-sm text-gray-900 dark:text-white mb-1 tracking-wider">FINALMENTE</h2>
                             <p class="leading-relaxed">Añade tu carrito de compras y selecciona métodos de pago y de envío para adquirir tu producto.</p>
                         </div>
                     </div>
@@ -127,9 +127,9 @@ export default function Welcome({ auth, success }) {
             </div>
         </section>
 
-        <section class="text-gray-600 body-font">
+        <section class="text-gray-600 dark:text-white body-font">
             <div class="container px-5 mx-auto">
-                <h1 class="sm:text-3xl text-2xl font-medium title-font text-center text-gray-900 mb-20">GJTEXTILES
+                <h1 class="sm:text-3xl text-2xl font-medium title-font text-center dark:text-white text-gray-900 mb-20">GJTEXTILES
                 </h1>
                 <div class="flex flex-wrap sm:-m-4 -mx-4 -mb-10 -mt-4 md:space-y-0 space-y-6">
                     <div class="p-4 md:w-1/3 flex">
@@ -139,7 +139,7 @@ export default function Welcome({ auth, success }) {
                                 </svg>
                             </div>
                             <div class="flex-grow pl-6">
-                                <h2 class="text-gray-900 text-lg title-font font-medium mb-2">Materiales de Alta Calidad</h2>
+                                <h2 class="text-gray-900 dark:text-white text-lg title-font font-medium mb-2">Materiales de Alta Calidad</h2>
                                 <p class="leading-relaxed text-base">Descubre nuestra colección de textiles elaborados con los mejores materiales del mercado, garantizando durabilidad y comodidad en cada prenda.</p>
                                 <a class="mt-3 text-yellow-500 inline-flex items-center">Aprende Más
                                 <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
@@ -157,7 +157,7 @@ export default function Welcome({ auth, success }) {
                                 </svg>
                             </div>
                             <div class="flex-grow pl-6">
-                            <h2 class="text-gray-900 text-lg title-font font-medium mb-2">Diseños Innovadores</h2>
+                            <h2 class="text-gray-900 dark:text-white text-lg title-font font-medium mb-2">Diseños Innovadores</h2>
                             <p class="leading-relaxed text-base">Nuestros diseños combinan lo último en tendencias con la comodidad y funcionalidad, asegurando que siempre estés a la moda.</p>
                             <a class="mt-3 text-yellow-500 inline-flex items-center">Descubre Más
                             <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
@@ -174,7 +174,7 @@ export default function Welcome({ auth, success }) {
                                 </svg>
                             </div>
                             <div class="flex-grow pl-6">
-                                <h2 class="text-gray-900 text-lg title-font font-medium mb-2">Personalización Única</h2>
+                                <h2 class="text-gray-900 dark:text-white text-lg title-font font-medium mb-2">Personalización Única</h2>
                                 <p class="leading-relaxed text-base">Personaliza tus prendas con nuestros servicios de bordado y estampado, creando artículos únicos que reflejan tu estilo personal.</p>
                                 <a class="mt-3 text-yellow-500 inline-flex items-center">Ver Opciones
                                 <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
@@ -186,85 +186,7 @@ export default function Welcome({ auth, success }) {
                     </div>
                 </div>
         </section>
-        <footer class="text-gray-600 body-font">
-            <div class="container px-5 py-24 mx-auto flex md:items-center lg:items-start md:flex-row md:flex-nowrap flex-wrap flex-col">
-                <div class="w-64 flex-shrink-0 md:mx-0 mx-auto text-center md:text-left md:mt-0 mt-10">
-                <a class="flex title-font font-medium items-center md:justify-start justify-center text-gray-900">
-                    <span class="text-xl">GJTextiles</span>
-                </a>
-                <p class="mt-2 text-sm text-gray-500">Air plant banjo lyft occupy retro adaptogen indego</p>
-                </div>
-                <div class="flex-grow flex flex-wrap md:pr-20 -mb-10 md:text-left text-center order-first">
-                <div class="lg:w-1/4 md:w-1/2 w-full px-4">
-                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
-                    <nav class="list-none mb-10">
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">First Link</a>
-                    </li>
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">Second Link</a>
-                    </li>
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">Third Link</a>
-                    </li>
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
-                    </li>
-                    </nav>
-                </div>
-                <div class="lg:w-1/4 md:w-1/2 w-full px-4">
-                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
-                    <nav class="list-none mb-10">
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">First Link</a>
-                    </li>
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">Second Link</a>
-                    </li>
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">Third Link</a>
-                    </li>
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
-                    </li>
-                    </nav>
-                </div>
-                <div class="lg:w-1/4 md:w-1/2 w-full px-4">
-                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
-                    <nav class="list-none mb-10">
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">First Link</a>
-                    </li>
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">Second Link</a>
-                    </li>
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">Third Link</a>
-                    </li>
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
-                    </li>
-                    </nav>
-                </div>
-                <div class="lg:w-1/4 md:w-1/2 w-full px-4">
-                    <h2 class="title-font font-medium text-gray-900 tracking-widest text-sm mb-3">CATEGORIES</h2>
-                    <nav class="list-none mb-10">
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">First Link</a>
-                    </li>
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">Second Link</a>
-                    </li>
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">Third Link</a>
-                    </li>
-                    <li>
-                        <a class="text-gray-600 hover:text-gray-800">Fourth Link</a>
-                    </li>
-                    </nav>
-                </div>
-                </div>
-            </div>
+        <footer class="text-gray-600 dark:text-whitebody-font mt-6">
             <div class="bg-gray-900">
                 <div class="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
                 <p class="text-yellow-500 text-md text-center sm:text-left">© 2024 {appName}</p>
