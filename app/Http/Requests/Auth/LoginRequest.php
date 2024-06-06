@@ -48,17 +48,6 @@ class LoginRequest extends FormRequest
                 'email' => trans('auth.failed'),
             ]);
         }
-
-        
-        $user = Auth::user();
-
-        if (! $user->hasVerifiedEmail()) {
-            Auth::logout();
-            throw ValidationException::withMessages([
-                'email' => 'Debe verificar su dirección de correo electrónico para poder iniciar sesión.',
-            ]);
-        }
-
         RateLimiter::clear($this->throttleKey());
     }
 
